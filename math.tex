@@ -1,0 +1,37 @@
+\documentclass[12pt,letterpaper]{article}
+\usepackage{amsfonts, amssymb, amsmath}
+\begin{document}
+\begin{center}\textbf{\underline{Bayes Filter for Gesture Recognition}}\end{center}
+\textbf{Variables}\\\\
+\textit{Hidden State Space}\\
+$\mathbb{Z} = \{z^t_\varnothing, z^t_1, ...., z^t_m\}$\\
+Where there are $m$ objects and $t$ represents the timestamp on the state.\\
+A state consists of an object being referenced (or no object being referenced) and a timestamp.\\
+Each state $z^t_i$ consists of a series of 3D points.\\
+NOTE: Consider combinations of objects? This would allow a good model of "The yellow objects". Initial model is for single objects only, but that is definitely a worthwhile extension.\\\\
+\textit{Observations}\\
+$\mathbb{O} = \{o_1, .... o_t\}$\\
+Where the subscript represents the timestamp for each observation.\\
+Where $o_i= \{l_i,r_i, h_i, s_i\}$\\
+Each observation consists of four parts:\\
+$l_i$, the left arm vector at time $i$\\
+$r_i$, the right arm vector\\
+$h_i$, the head vector\\
+$s_i$, speech\\
+Since not all components of the observation tuple are guaranteed to be present at the same time, any of the four can take on a null value\\\\
+\textit{Transition Function}\\
+The transition function $\mathbb{T}(z^t_i, z^{t+1}_k)$ returns the probability of state $z^t_i$ transitioning to $z^{t+1}_k$.\\
+Transition probabilities should be high for $\mathbb{T}(z_i^t,z^{t+1}_k)$ when $i=k$ and low otherwise. (Or we can start with uniform, but this makes more sense to me intuitively)\\\\
+\textbf{Equations}\\\\
+We wish to know the most likely state (object being referenced) given our observations and previous state estimation, namely:\\
+$\underset{z^t_i}{\text{argmax}}[P(z^t_i | o_{t-1})*\displaystyle\sum_{z^{t-1}_k \in \mathbb{Z}} P(z^t_i|z^{t-1}_k)] $\\
+Where:\\
+$P(z^t_i | z^{t-1}_k) = \mathbb{T}(z^{t-1}_k, z^t_i)*P(z^{t-1}_k)$\\
+$P(z^0_k) = \frac{1}{m+1}$\\
+$P(z^t_i|o_{t-1}) = P(z^t_i|l_{t-1})*P(z^t_i|r_{t-1})*P(z^t_i|h_{t-1})*P(z^t_i|s_{t-1})$\\
+Let $\mathbb{N}$ represent the probability of seeing a specific sample with a  normal distribution of the specified parameters and $\theta$ represent the angle between the input vector and the sample point.\\
+$P(z^t_i|l_{t-1}) = [\displaystyle \prod_{p \in z^t_i} \mathbb{N}(\mu_l, \sigma_l, \theta(l_{t-1}, p))]^w$\\
+$P(z^t_i|r_{t-1})=[\displaystyle \prod_{p \in z^t_i} \mathbb{N}(\mu_r, \sigma_r, \theta(r_{t-1}, p))]^x$\\
+$P(z^t_i|h_{t-1}) =[\displaystyle \prod_{p \in z^t_i} \mathbb{N}(\mu_h, \sigma_h, \theta(h_{t-1}, p))]^y$\\
+
+\end{document}
