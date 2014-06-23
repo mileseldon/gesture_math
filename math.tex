@@ -34,6 +34,10 @@ $P(z^t_i|o_{t-1}) = P(z^t_i|l_{t-1})^u*P(z^t_i|r_{t-1})^w*P(z^t_i|h_{t-1})^x*P(z
 $P(z^t_i|l_{t-1}) = \displaystyle \prod_{p \in z^t_i} \mathbb{N}(\mu_l=0, \sigma_l, \theta(l_{t-1}, p))$\\
 $P(z^t_i|r_{t-1})=\displaystyle \prod_{p \in z^t_i} \mathbb{N}(\mu_r=0, \sigma_r, \theta(r_{t-1}, p))$\\
 $P(z^t_i|h_{t-1}) =\displaystyle \prod_{p \in z^t_i} \mathbb{N}(\mu_h=0, \sigma_h, \theta(h_{t-1}, p))$\\
-$P(z^t_i|s_{t-1}) = \text{TBD}$
+$P(z^t_i|s_{t-1}) = \text{TBD}$\\
+NOTE: How to deal with varying cluster sizes?\\
+1) Use only mean instead of product.\\
+2) Pad with mean so that all clusters have the same number of particles\\
+3) Pad with random sample so that all clusters have the same number of particles
 
 \end{document}
