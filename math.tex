@@ -1,5 +1,8 @@
 \documentclass[12pt,letterpaper]{article}
 \usepackage{amsfonts, amssymb, amsmath}
+\usepackage[usenames,dvipsnames]{color}
+\newcommand{\stnote}[1]{\textcolor{Blue}{\textbf{ST: #1}}}
+
 \begin{document}
 \begin{center}\textbf{\underline{Bayes Filter for Gesture Recognition}}\end{center}
 \textbf{Variables}\\\\
@@ -22,6 +25,7 @@ Since not all components of the observation tuple are guaranteed to be present a
 \textit{Transition Function}\\
 The transition function $\mathbb{T}(z^t_i, z^{t+1}_k)$ returns the probability of state $z^t_i$ transitioning to $z^{t+1}_k$.\\
 Transition probabilities should be high for $\mathbb{T}(z_i^t,z^{t+1}_k)$ when $i=k$ and low otherwise. (Or we can start with uniform, but this makes more sense to me intuitively)\\
+\stnote{I think we should use maybe a Poisson Process. }
 We could also weight the transition functions based on shared properties.\\\\
 Let $\mathbb{N}$ represent the probability of seeing a specific sample with a  normal distribution of the specified parameters,  $\theta$ represent the angle between the input vector and the sample point, and w,x, and y be exponents for weighting each sample appropriately.\\\\
 \textbf{Equations}\\\\
