@@ -14,13 +14,13 @@ Where there are $m$ objects and $t$ represents the timestamp on the state.\\
 Each state $z^t_i$ represents an object as a series of 3D points at time t.\\
 \menote{Consider combinations of objects? This would allow a good model of "The yellow objects". Initial model is for single objects only, but that is definitely a worthwhile extension.}\\\\
 \textit{Observations}\\
-$\mathbb{O} = \{o^1, .... o^t\}$\\
+$\mathbb{O} = \{o^1, .... o^n\}$\\
 Where the superscript represents the timestamp for each observation.\\
-Where $o_i= \{\vec{l^i},\vec{r^i}, \vec{h^i}, s^i\}$\\
+Where $o^i= \{\vec{l^i},\vec{r^i}, \vec{h^i}, s^i\}$\\
 Each observation consists of four parts:\\
-$l^i$, the left arm vector at time $i$\\
-$r^i$, the right arm vector\\
-$h^i$, the head vector\\
+$\vec{l^i}$, the left arm vector at time $i$\\
+$\vec{r^i}$, the right arm vector\\
+$\vec{h^i}$, the head vector\\
 $s^i$, speech\\
 Since not all components of the observation tuple are guaranteed to be present at the same time, any of the four can take on a null value\\\\
 \textit{Transition Function}\\
