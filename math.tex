@@ -1,11 +1,54 @@
-\documentclass[12pt,letterpaper]{article}
+\documentclass[letterpaper, 10 pt, conference]{ieeeconf} 
+\IEEEoverridecommandlockouts 
+\overrideIEEEmargins                                      % Needed to meet printer requirements.
+\usepackage{natbib}
+
+
+\title{\LARGE \bf
+Interpreting Multimodal Referring Expressions in Real Time}
+\author{Miles Eldon$^{1}$ and Stefanie Tellex$^{1}$
+\thanks{$^{1}$Computer Science Department, Brown University}
+}
+
 \usepackage{amsfonts, amssymb, amsmath}
 \usepackage[usenames,dvipsnames]{color}
 \newcommand{\stnote}[1]{\textcolor{Blue}{\textbf{ST: #1}}}
 \newcommand{\menote}[1]{\textcolor{Red}{\textbf{ME: #1}}}
 
 \begin{document}
-\begin{center}\textbf{\underline{Bayes Filter for Gesture Recognition}}\end{center}
+
+\maketitle
+\thispagestyle{empty}
+\pagestyle{empty}
+
+\begin{abstract}
+Identifying objects for shared tasks, such as a knife for assistance
+at cooking, or a screw used to assemble a part on a factory floor, is
+a key part of many human-robot collaborative tasks.  Robots that
+collaborate with people must be able to understand their references to
+objects in the environment.  Existing work has addressed this problem
+in single modalities, such as natural language or gesture, but a gap
+remains in creating real-time multimodal systems that simultaneously
+fuse information from language and gesture in a principled mathemtical
+framework.  We define a multimodal Bayes' filtering approach to
+interpreting referring expressions to object using language and
+gesture.  We collected a new RGB-D and audio dataset of people
+referring to objects in a tabletop setting and demonstrate that our
+approach successfully integrates information from language and gesture
+in real time to quickly and accurately identify objects.
+\end{abstract}
+
+\section{INTRODUCTION}
+
+\section{RELATED WORK}
+
+
+
+\citep{matuszek12}
+
+\section{TECHNICAL APPROACH}
+
+
 \textbf{Definitions}
 \begin{itemize}
 \item{Hidden State Space}
@@ -62,4 +105,15 @@
 	\item{$bel(\mathcal{X}_0 = x) =  \frac{1}{m+1}$ (uniform initialization of belief)}
 	\end{itemize}
 \end{itemize}
+
+\section{EVALUATION}
+
+\section{CONCLUSION}
+
+\section{REFERENCES}
+\bibliographystyle{abbrvnat}
+\bibliography{main}
+
+
+
 \end{document}

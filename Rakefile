@@ -2,6 +2,10 @@ desc "build the pdf"
 task :default => [] do
   sh "pdflatex math.tex"
   sh "pdflatex math.tex"
+  sh "bibtex math"
+  sh "bibtex math"
+  sh "pdflatex math.tex"
+  sh "pdflatex math.tex"
 end
 
 
