@@ -46,7 +46,7 @@ in real time to quickly and accurately identify objects.
 \citep{matuszek12}
 
 \section{TECHNICAL APPROACH}
-
+\menote{Is there a place I should define variables or should I just define as they come up?}
 Our aim is to estimate a distribution over the object that a person is
 referring to given language and gesture inputs.  We frame the problem
 as a Bayes' filter, where the hidden state, $\mathcal{X}$, is the set
@@ -59,26 +59,19 @@ over $\mathcal{X}$:
 \end{align}
 
 
-\stnote{Time update and measurement update should go here, with z and
-  not the tuple.  Then the observation model section should explain
-  how each model works.}
-
 
 
 The time update is the probability that the person will change the
 object they are referring to at the next time step:
 \begin{align}
-P(x_t | \mathcal{Z}_{0:t-1}) = 
+p(x_t | \mathcal{Z}_{0:t-1}) = \int p(x_t|x_{t-1})\times p(x_{t-1} | \mathcal{Z}_{0:t-1}) \text{d}x_{t-1}
 \end{align}
-\stnote{Should be an integral over the previous state}
-
 
 The measurement update incorporates an estimate of the updated state
 based on new observations of the person's actions: 
 \begin{align}
-P(x_t | \mathcal{Z}_{0:t}) \
+p(x_t | \mathcal{Z}_{0:t}) = \frac{p(\mathcal{Z}_t | x_t) \times p(x_t | \mathcal{Z}_{0:t-1})}{p(\mathcal{Z}_t | \mathcal{Z}_{0:t-1})} \\\propto p(\mathcal{Z}_t | x_t) \times p(x_t | \mathcal{Z}_{0:t-1})
 \end{align}
-\stnote{Should be Bayes's rule.}
 
 
 
@@ -104,18 +97,25 @@ $\langle l, r, h, s\rangle $ where:
 p(z_t | x_t) = p(l, r, h, s | x_t)\\
 p(z_t | x_t) = p(l | x_t) \times p(r | x_t) \times p(h | x_t) \times p(s | x_t)
 \end{align}
+\menote{time subscript on l, r, h, and s?}
 
-{\bf Gesture.}  We model gesture ....
-
-\stnote{Fill in equations here}
-
+{\bf Gesture.}  We model gesture as a vector through three dimensional space. We calculate the probability of a gesture by examining every three dimensional particle (denoted as $q$) in an object and calculating the angle between the vector and the vector formed with that particle. We then use a Gaussian distribution with a  variance found during training to calculate the probability of seeing that angle difference. We then take the product of each of these points and normalize it. The probability of each gesture given the state is as follows:
+\begin{align}
+p(l|x_t) = [\displaystyle \prod_{q \in x_t} \mathcal{N}(\mu_l=0, \sigma_l, \Phi(l_o,l_v, q))]^{(\frac{\sum_{x'\in\mathcal{X}} len(x'_p)}{len(x_p)})}\\
+p(r|x_t) = [\displaystyle \prod_{q \in x_t} \mathcal{N}(\mu_r=0, \sigma_r, \Phi(r_o,r_v, q))]^{(\frac{\sum_{x'\in\mathcal{X}} len(x'_p)}{len(x_p)})}
+\end{align}
 {\bf Head Pose.}
-
-\stnote{Fill in equations here}
-
+Head pose is modeled in the same manner as arm gestures.
+\begin{align}
+p(h|x_t) = [\displaystyle \prod_{q \in x_t} \mathcal{N}(\mu_h=0, \sigma_h, \Phi(h_o,h_v, q))]^{(\frac{\sum_{x'\in\mathcal{X}} len(x'_p)}{len(x_p)})}
+\end{align}
+\menote{More concise way to show this? They are all the same besides variance. I guess we could just do $\prod_{g\in\{h,l,r\}}$}
 {\bf Speech.}
-
-\stnote{Fill in equations here}
+We model speech with a simple bag of words model. We take the words in a given speech input and count how many words in this text match descriptors (denoted  $x_d$) of specific objects.
+\begin{align}
+p(s_t |\mathcal{X}_t=x) = \frac{\displaystyle\sum_{w\in s_{t}} \mathcal{I}(w, x_d)}{\displaystyle\sum_{x \in \mathcal{X}}\sum_{w\in s_{t}} \mathcal{I}(w, x'_d)}
+\end{align}
+\menote{This is only the case if we just have a set of descriptors without counts/probabilities. If we want to gain sample descriptors from user then we should probably use Bayesian classification}
 
 
 
