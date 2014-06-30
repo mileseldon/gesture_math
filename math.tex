@@ -95,10 +95,10 @@ in real time to quickly and accurately identify objects.
 	\begin{itemize}
 	\item{An equation used to determine the belief that $\mathcal{X}_t = x$ given observation $\mathcal{Z}_{t-1}$}
 	\item{$P(\mathcal{X}_t=x | \mathcal{Z}_{t-1}) = P(X_t=x | l_{t-1})*P(X_t=x | r_{t-1})*P(X_t=x |h_{t-1})*P(X_t=x | s_{t-1})$}
-	\item{$P(\mathcal{X}_t=x|l_{t-1}) = [\displaystyle \prod_{p \in x_p} \mathcal{N}(\mu_l=0, \sigma_l, \Phi(l_o,l_v, p))]^{(\frac{len(x_p)}{\sum_{x'\in\mathcal{X}} len(x'_p)})}$\\}
-	\item{$P(\mathcal{X}_t=x|r_{t-1}) = [\displaystyle \prod_{p \in x_p} \mathcal{N}(\mu_r=0, \sigma_r, \Phi(r_o,r_v, p))]^{(\frac{len(x_p)}{\sum_{x'\in\mathcal{X}} len(x'_p)})}$\\}
-	\item{$P(\mathcal{X}_t=x|h_{t-1}) = [\displaystyle \prod_{p \in x_p} \mathcal{N}(\mu_h=0, \sigma_h, \Phi(h_o,h_v, p))]^{(\frac{len(x_p)}{\sum_{x'\in\mathcal{X}} len(x'_p)})}$\\}
-	\item{These three equations are all very similar. They basically compute the probability of each point being seen given the vector of the gesture and multiply this out for all points. Finally, it is raised to a power equal to the ratio of points in the given object to the total number of points to normalize so that small objects don't have much larger probabilities.}
+	\item{$P(\mathcal{X}_t=x|l_{t-1}) = [\displaystyle \prod_{p \in x_p} \mathcal{N}(\mu_l=0, \sigma_l, \Phi(l_o,l_v, p))]^{(\frac{\sum_{x'\in\mathcal{X}} len(x'_p)}{len(x_p)})}$\\}
+	\item{$P(\mathcal{X}_t=x|r_{t-1}) = [\displaystyle \prod_{p \in x_p} \mathcal{N}(\mu_r=0, \sigma_r, \Phi(r_o,r_v, p))]^{(\frac{\sum_{x'\in\mathcal{X}} len(x'_p)}{len(x_p)})}$\\}
+	\item{$P(\mathcal{X}_t=x|h_{t-1}) = [\displaystyle \prod_{p \in x_p} \mathcal{N}(\mu_h=0, \sigma_h, \Phi(h_o,h_v, p))]^{(\frac{\sum_{x'\in\mathcal{X}} len(x'_p)}{len(x_p)})}$\\}
+	\item{These three equations are all very similar. They basically compute the probability of each point being seen given the vector of the gesture and multiply this out for all points. Finally, it is raised to a power equal to the ratio of total points to the number of points in the given object to normalize so that small objects don't have much larger probabilities.}
 	\item{$P(\mathcal{X}_t=x|s_{t-1}) = \frac{\displaystyle\sum_{w\in s_{t-1}} \mathcal{I}(w, x_d)}{\displaystyle\sum_{x \in \mathcal{X}}\sum_{w\in s_{t-1}} \mathcal{I}(w, x'_d)}$}
 	\item{This simply computes the ratio of words in the spoken phrase that are in the descriptors of the object to the number of the words that match any object}
 	\end{itemize}
