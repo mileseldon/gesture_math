@@ -43,37 +43,89 @@ in real time to quickly and accurately identify objects.
 \section{RELATED WORK}
 
 
-
 \citep{matuszek12}
 
 \section{TECHNICAL APPROACH}
 
+Our aim is to estimate a distribution over the object that a person is
+referring to given language and gesture inputs.  We frame the problem
+as a Bayes' filter, where the hidden state, $\mathcal{X}$, is the set
+of $m$ objects in the scene that can be referenced and a state for no
+item being referenced.  The robot observes the person's actions and
+speech, $\mathcal{Z}$, and at each timestep estimates a distribution
+over $\mathcal{X}$:
+\begin{align}
+  p(\mathcal{X}_t | \mathcal{Z}_0 \dots \mathcal{Z}_{0:t})
+\end{align}
 
-\textbf{Definitions}
+
+\stnote{Time update and measurement update should go here, with z and
+  not the tuple.  Then the observation model section should explain
+  how each model works.}
+
+
+
+The time update is the probability that the person will change the
+object they are referring to at the next time step:
+\begin{align}
+P(x_t | \mathcal{Z}_{0:t-1}) = 
+\end{align}
+\stnote{Should be an integral over the previous state}
+
+
+The measurement update incorporates an estimate of the updated state
+based on new observations of the person's actions: 
+\begin{align}
+P(x_t | \mathcal{Z}_{0:t}) \
+\end{align}
+\stnote{Should be Bayes's rule.}
+
+
+
+
+
+\subsection{Observation Model}
+
+We assume access to an observation model of the form:
+\begin{align}
+p(z_t | x_t)
+\end{align}
+
+Observations consist of a tuple consisting of a person's actions,
+$\langle l, r, h, s\rangle $ where:
 \begin{itemize}
-\item{Hidden State Space}
-	\begin{itemize}
-	\item{$\mathcal{X}$: the set of $m$ objects in the scene that can be referenced and a state for no item being referenced}
-	\item{An example would be: $x = \text{Object 1 is being referenced}$}
-	\item{Each object in the scene has an associated set of three dimensional points ($x_p$) and set of descriptor keywords $(x_d)$}
+	\item $l$ represents the observed origin ($l_o$) and vector ($l_v$) for the left arm.
+	\item $r$ represents the observed origin  ($r_o$) and vector ($r_v$)  for the right arm .
+	\item $h$ represents the observed origin  ($h_o$) and vector ($h_v$)  for head.
+	\item $s$ represents the observed speech from the user, consisting of a list of words.
 	\end{itemize}
-\item{Observations}
-	\begin{itemize}
-	\item{$\mathcal{Z}$: the set of four-tuple $\{l, r, h, s\}$}
-	\item{$l$ represents the observed origin ($l_o$) and vector ($l_v$) for the left arm}
-	\item{$r$ represents the observed origin  ($r_o$) and vector ($r_v$)  for the right arm}
-	\item{$h$ represents the observed origin  ($h_o$) and vector ($h_v$)  for head}
-	\item{$s$ represents the observed speech from the user, consisting of a list of words}
-	\end{itemize}
+
+\begin{align}
+p(z_t | x_t) = p(l, r, h, s | x_t)\\
+p(z_t | x_t) = p(l | x_t) \times p(r | x_t) \times p(h | x_t) \times p(s | x_t)
+\end{align}
+
+{\bf Gesture.}  We model gesture ....
+
+\stnote{Fill in equations here}
+
+{\bf Head Pose.}
+
+\stnote{Fill in equations here}
+
+{\bf Speech.}
+
+\stnote{Fill in equations here}
+
+
+
+\begin{itemize}
 \item{Transition Function}
 	\begin{itemize}
 	\item{$\mathcal{T}$: a function such that $\mathcal{T}(x_a, x_b)$ is equivalent to the probability that $x_a$ transitions to $x_b$}
 	\item{\stnote{Model with Poisson?}}
 	\end{itemize}
-\item{$\mathcal{N}$: a function that returns the probability of a sample under a Gaussian distribution given a mean and variance}
-	\begin{itemize}
-	\item{Applied as $\mathcal{N}(\mu, \sigma, \text{sample})$}
-	\end{itemize}
+
 \item{$\Phi$: a function that, given an origin and two points, returns the angle between the two points}
 	\begin{itemize}
 	\item{Applied as $\Phi(\text{origin}, p_1, p_2)$}
