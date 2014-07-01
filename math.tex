@@ -96,11 +96,9 @@ $\langle l, r, h, s\rangle $ where:
 p(z_t | x_t) = p(l, r, h, s | x_t)\\
 p(z_t | x_t) = p(l | x_t) \times p(r | x_t) \times p(h | x_t) \times p(s | x_t)
 \end{align}
-\menote{time subscript on l, r, h, and s?}
-
-{\bf Gesture.}  We model gesture as a vector through three dimensional space. We calculate the probability of a gesture by examining every three dimensional particle (denoted as $q$) in an object and calculating the angle between the vector and the vector formed with that particle. We then use a Gaussian distribution with a  variance found during training to calculate the probability of seeing that angle difference. We then take the product of each of these points and normalize it. The probability of each gesture given the state is as follows:
+{\bf Gesture.}  We model gesture as a vector through three dimensional space. We calculate the probability of a gesture by examining every three dimensional particle (denoted as $q$) in an object and calculating the angle (function $\Phi$) between the vector formed by the gesture and the vector formed with that particle. We then use a Gaussian distribution with a variance ($\sigma$) found during training to calculate the probability of seeing that angle difference. We then take the product of each of these points and normalize it so that small objects with few particles don't always dominate the probability distribution. The probability of each gesture given the state is as follows:
 \begin{align}
-p(l|x_t) = [\displaystyle \prod_{q \in x_t} \mathcal{N}(\mu_l=0, \sigma_l, \Phi(l_o,l_v, q))]^{(\frac{\sum_{x'\in\mathcal{X}} len(x'_p)}{len(x_p)})}\\
+p(l|x_t) =[\displaystyle \prod_{q \in x_t} \mathcal{N}(\mu_l=0, \sigma_l, \Phi(l_o,l_v, q))]^{(\frac{\sum_{x'\in\mathcal{X}} len(x'_p)}{len(x_p)})}\\
 p(r|x_t) = [\displaystyle \prod_{q \in x_t} \mathcal{N}(\mu_r=0, \sigma_r, \Phi(r_o,r_v, q))]^{(\frac{\sum_{x'\in\mathcal{X}} len(x'_p)}{len(x_p)})}
 \end{align}
 {\bf Head Pose.}
@@ -112,9 +110,8 @@ p(h|x_t) = [\displaystyle \prod_{q \in x_t} \mathcal{N}(\mu_h=0, \sigma_h, \Phi(
 {\bf Speech.}
 We model speech with a simple bag of words model. We take the words in a given speech input and count how many words in this text match descriptors (denoted  $x_d$) of specific objects.
 \begin{align}
-p(s_t |\mathcal{X}_t=x) = \frac{\displaystyle\sum_{w\in s_{t}} \mathcal{I}(w, x_d)}{\displaystyle\sum_{x \in \mathcal{X}}\sum_{w\in s_{t}} \mathcal{I}(w, x'_d)}
+p(s |x_t) = \displaystyle \prod_{w \in s} p(w | x_t)
 \end{align}
-\menote{This is only the case if we just have a set of descriptors without counts/probabilities. If we want to gain sample descriptors from user then we should probably use Bayesian classification}
 
 
 \section{EVALUATION}
