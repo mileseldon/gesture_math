@@ -46,7 +46,6 @@ in real time to quickly and accurately identify objects.
 \citep{matuszek12}
 
 \section{TECHNICAL APPROACH}
-\menote{Is there a place I should define variables or should I just define as they come up?}
 Our aim is to estimate a distribution over the object that a person is
 referring to given language and gesture inputs.  We frame the problem
 as a Bayes' filter, where the hidden state, $\mathcal{X}$, is the set
@@ -117,50 +116,6 @@ p(s_t |\mathcal{X}_t=x) = \frac{\displaystyle\sum_{w\in s_{t}} \mathcal{I}(w, x_
 \end{align}
 \menote{This is only the case if we just have a set of descriptors without counts/probabilities. If we want to gain sample descriptors from user then we should probably use Bayesian classification}
 
-
-
-\begin{itemize}
-\item{Transition Function}
-	\begin{itemize}
-	\item{$\mathcal{T}$: a function such that $\mathcal{T}(x_a, x_b)$ is equivalent to the probability that $x_a$ transitions to $x_b$}
-	\item{\stnote{Model with Poisson?}}
-	\end{itemize}
-
-\item{$\Phi$: a function that, given an origin and two points, returns the angle between the two points}
-	\begin{itemize}
-	\item{Applied as $\Phi(\text{origin}, p_1, p_2)$}
-	\end{itemize}
-\item{$\mathcal{I}$: an indicator function applied as $\mathcal{I}(\text{word}, \text{corpus}$ that returns 1 if the word is in the corpus and 0 otherwise}
-\item{$len$: the number of items in a list}
-%\item{$\mu_l$, $\mu_r$, \mu_h$: the sample means for each component of the observations}
-%\item{$\sigma_l$, $\sigma_r$, $\sigma_h$: the sample variances for each component of the observations}
-\end{itemize}
-\textbf{Equations}
-\begin{itemize}
-\item{Time Update}
-	\begin{itemize}
-	\item{An equation used to determine the probability that $\mathcal{X}_t = x$ given only previous belief states}
-	\item{$P(\mathcal{X}_t = x | \mathcal{X}_{t-1} .... \mathcal{X}_0) =\displaystyle\sum_{x' \in \mathcal{X}} \mathcal{T}(x, x')*bel(\mathcal{X}_{t-1} = x')$}
-	\item{This function computes the new probability for a state by multiplying the probability for each past state times  transition probability and then summing all these new probabilities.}
-	\end{itemize}
-\item{Measurement Update}
-	\begin{itemize}
-	\item{An equation used to determine the belief that $\mathcal{X}_t = x$ given observation $\mathcal{Z}_{t-1}$}
-	\item{$P(\mathcal{X}_t=x | \mathcal{Z}_{t-1}) = P(X_t=x | l_{t-1})*P(X_t=x | r_{t-1})*P(X_t=x |h_{t-1})*P(X_t=x | s_{t-1})$}
-	\item{$P(\mathcal{X}_t=x|l_{t-1}) = [\displaystyle \prod_{p \in x_p} \mathcal{N}(\mu_l=0, \sigma_l, \Phi(l_o,l_v, p))]^{(\frac{\sum_{x'\in\mathcal{X}} len(x'_p)}{len(x_p)})}$\\}
-	\item{$P(\mathcal{X}_t=x|r_{t-1}) = [\displaystyle \prod_{p \in x_p} \mathcal{N}(\mu_r=0, \sigma_r, \Phi(r_o,r_v, p))]^{(\frac{\sum_{x'\in\mathcal{X}} len(x'_p)}{len(x_p)})}$\\}
-	\item{$P(\mathcal{X}_t=x|h_{t-1}) = [\displaystyle \prod_{p \in x_p} \mathcal{N}(\mu_h=0, \sigma_h, \Phi(h_o,h_v, p))]^{(\frac{\sum_{x'\in\mathcal{X}} len(x'_p)}{len(x_p)})}$\\}
-	\item{These three equations are all very similar. They basically compute the probability of each point being seen given the vector of the gesture and multiply this out for all points. Finally, it is raised to a power equal to the ratio of total points to the number of points in the given object to normalize so that small objects don't have much larger probabilities.}
-	\item{$P(\mathcal{X}_t=x|s_{t-1}) = \frac{\displaystyle\sum_{w\in s_{t-1}} \mathcal{I}(w, x_d)}{\displaystyle\sum_{x \in \mathcal{X}}\sum_{w\in s_{t-1}} \mathcal{I}(w, x'_d)}$}
-	\item{This simply computes the ratio of words in the spoken phrase that are in the descriptors of the object to the number of the words that match any object}
-	\end{itemize}
-\item{Belief Update}
-	\begin{itemize}
-	\item{An equation that produces the probability that $\mathcal{X}_t = x$ given all past observations and belief states, namely the product of the measurement and time updates}
-	\item{$bel(X_t = x) = P(\mathcal{X}_t=x | \mathcal{Z}_{t-1})*P(\mathcal{X}_t = x | \mathcal{X}_{t-1} .... \mathcal{X}_0)$}
-	\item{$bel(\mathcal{X}_0 = x) =  \frac{1}{m+1}$ (uniform initialization of belief)}
-	\end{itemize}
-\end{itemize}
 
 \section{EVALUATION}
 
