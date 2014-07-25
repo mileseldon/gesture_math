@@ -49,27 +49,24 @@ in real time to quickly and accurately identify objects.
 Our aim is to estimate a distribution over the object that a person is
 referring to given language and gesture inputs.  We frame the problem
 as a Bayes' filter, where the hidden state, $\mathcal{X}$, is the set
-of $m$ objects in the scene that can be referenced and a state for no
-item being referenced.  The robot observes the person's actions and
+of $m$ objects in the scene that can be referenced. The robot observes the person's actions and
 speech, $\mathcal{Z}$, and at each timestep estimates a distribution
 over $\mathcal{X}$:
 \begin{align}
-  p(\mathcal{X}_t | \mathcal{Z}_0 \dots \mathcal{Z}_{0:t})
+  p(x_t | z_0 \dots z_{0:t})
 \end{align}
 
 
 
 
-The time update is the probability that the person will change the
-object they are referring to at the next time step:
+The time update updates the belief that the user is in any specific state given all previous information:
 \begin{align}
-p(x_t | \mathcal{Z}_{0:t-1}) = \int p(x_t|x_{t-1})\times p(x_{t-1} | \mathcal{Z}_{0:t-1}) \text{d}x_{t-1}
+p(x_t | z_{0:t-1}) = \int p(x_t|x_{t-1})\times p(x_{t-1} | \mathcal{Z}_{0:t-1}) \text{d}x_{t-1}
 \end{align}
 
-The measurement update incorporates an estimate of the updated state
-based on new observations of the person's actions: 
+The measurement update combines the previous belief with the newest observation to update each belief state: 
 \begin{align}
-p(x_t | \mathcal{Z}_{0:t}) = \frac{p(\mathcal{Z}_t | x_t) \times p(x_t | \mathcal{Z}_{0:t-1})}{p(\mathcal{Z}_t | \mathcal{Z}_{0:t-1})} \\\propto p(\mathcal{Z}_t | x_t) \times p(x_t | \mathcal{Z}_{0:t-1})
+p(x_t | \mathcal{Z}_{0:t}) = \frac{p(z_t | x_t) \times p(x_t | z_{0:t-1})}{p(z_t | z_{0:t-1})} \\\propto p(z_t | x_t) \times p(x_t | z_{0:t-1})
 \end{align}
 
 
@@ -96,15 +93,19 @@ $\langle l, r, h, s\rangle $ where:
 p(z_t | x_t) = p(l, r, h, s | x_t)\\
 p(z_t | x_t) = p(l | x_t) \times p(r | x_t) \times p(h | x_t) \times p(s | x_t)
 \end{align}
-{\bf Gesture.}  We model gesture as a vector through three dimensional space. We calculate the probability of a gesture by examining every three dimensional particle (denoted as $q$) in an object and calculating the angle (function $\Phi$) between the vector formed by the gesture and the vector formed with that particle. We then use a Gaussian distribution with a variance ($\sigma$) found during training to calculate the probability of seeing that angle difference. We then take the product of each of these points and normalize it so that small objects with few particles don't always dominate the probability distribution. The probability of each gesture given the state is as follows:
+{\bf Gesture.}  We model gesture as a vector through three dimensional space. We calculate the angle between the gesture vector and the vector from the gesture origin to the mean of each cluster, and then use the PDF of a gaussian with trained variance to determine the weight that should be assigned to that object. Let $\Phi(<origin>, <point>, <point>)$ give the angle between the two points with the given origin.
+%We calculate the probability of a gesture by examining every three dimensional particle (denoted as $q$) in an object and calculating the angle (function $\Phi$) between the vector formed by the gesture and the vector formed with that particle. We then use a Gaussian distribution with a variance ($\sigma$) found during training to calculate the probability of seeing that angle difference. We then take the product of each of these points and normalize it so that small objects with few particles don't always dominate the probability distribution. The probability of each gesture given the state is as follows:
 \begin{align}
-p(l|x_t) =[\displaystyle \prod_{q \in x_t} \mathcal{N}(\mu_l=0, \sigma_l, \Phi(l_o,l_v, q))]^{(\frac{\sum_{x'\in\mathcal{X}} len(x'_p)}{len(x_p)})}\\
-p(r|x_t) = [\displaystyle \prod_{q \in x_t} \mathcal{N}(\mu_r=0, \sigma_r, \Phi(r_o,r_v, q))]^{(\frac{\sum_{x'\in\mathcal{X}} len(x'_p)}{len(x_p)})}
+p(l | x_t) \propto \Phi(l_o, l_v, x_t)\\
+p(r | x_t) \propto \Phi(r_o, r_v, x_t)
+%p(l|x_t) =[\displaystyle \prod_{q \in x_t} \mathcal{N}(\mu_l=0, \sigma_l, \Phi(l_o,l_v, q))]^{(\frac{\sum_{x'\in\mathcal{X}} len(x'_q)}{len(x_q)})}\\
+%p(r|x_t) = [\displaystyle \prod_{q \in x_t} \mathcal{N}(\mu_r=0, \sigma_r, \Phi(r_o,r_v, q))]^{(\frac{\sum_{x'\in\mathcal{X}} len(x'_q)}{len(x_q)})}
 \end{align}
 {\bf Head Pose.}
 Head pose is modeled in the same manner as arm gestures.
 \begin{align}
-p(h|x_t) = [\displaystyle \prod_{q \in x_t} \mathcal{N}(\mu_h=0, \sigma_h, \Phi(h_o,h_v, q))]^{(\frac{\sum_{x'\in\mathcal{X}} len(x'_p)}{len(x_p)})}
+p(h | x_t) \propto \Phi(h_o, h_v, x_t)
+%p(h|x_t) = [\displaystyle \prod_{q \in x_t} \mathcal{N}(\mu_h=0, \sigma_h, \Phi(h_o,h_v, q))]^{(\frac{\sum_{x'\in\mathcal{X}} len(x'_q)}{len(x_q)})}
 \end{align}
 \menote{More concise way to show this? They are all the same besides variance. I guess we could just do $\prod_{g\in\{h,l,r\}}$}
 {\bf Speech.}
