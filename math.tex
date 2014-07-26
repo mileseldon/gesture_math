@@ -96,15 +96,15 @@ p(z_t | x_t) = p(l | x_t) \times p(r | x_t) \times p(h | x_t) \times p(s | x_t)
 {\bf Gesture.}  We model gesture as a vector through three dimensional space. We calculate the angle between the gesture vector and the vector from the gesture origin to the mean of each cluster, and then use the PDF of a gaussian with trained variance to determine the weight that should be assigned to that object. Let $\Phi(<origin>, <point>, <point>)$ give the angle between the two points with the given origin.
 %We calculate the probability of a gesture by examining every three dimensional particle (denoted as $q$) in an object and calculating the angle (function $\Phi$) between the vector formed by the gesture and the vector formed with that particle. We then use a Gaussian distribution with a variance ($\sigma$) found during training to calculate the probability of seeing that angle difference. We then take the product of each of these points and normalize it so that small objects with few particles don't always dominate the probability distribution. The probability of each gesture given the state is as follows:
 \begin{align}
-p(l | x_t) \propto \Phi(l_o, l_v, x_t)\\
-p(r | x_t) \propto \Phi(r_o, r_v, x_t)
+p(l | x_t) \propto \mathcal{N}(\mu_l=0, \sigma_l,\Phi(l_o, l_v, x_t))\\
+p(r | x_t) \propto \mathcal{N}(\mu_r=0, \sigma_r,\Phi(r_o, r_v, x_t))
 %p(l|x_t) =[\displaystyle \prod_{q \in x_t} \mathcal{N}(\mu_l=0, \sigma_l, \Phi(l_o,l_v, q))]^{(\frac{\sum_{x'\in\mathcal{X}} len(x'_q)}{len(x_q)})}\\
 %p(r|x_t) = [\displaystyle \prod_{q \in x_t} \mathcal{N}(\mu_r=0, \sigma_r, \Phi(r_o,r_v, q))]^{(\frac{\sum_{x'\in\mathcal{X}} len(x'_q)}{len(x_q)})}
 \end{align}
 {\bf Head Pose.}
 Head pose is modeled in the same manner as arm gestures.
 \begin{align}
-p(h | x_t) \propto \Phi(h_o, h_v, x_t)
+p(h | x_t) \propto \mathcal{N}(\mu_h=0, \sigma_h,\Phi(h_o, h_v, x_t))
 %p(h|x_t) = [\displaystyle \prod_{q \in x_t} \mathcal{N}(\mu_h=0, \sigma_h, \Phi(h_o,h_v, q))]^{(\frac{\sum_{x'\in\mathcal{X}} len(x'_q)}{len(x_q)})}
 \end{align}
 \menote{More concise way to show this? They are all the same besides variance. I guess we could just do $\prod_{g\in\{h,l,r\}}$}
