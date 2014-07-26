@@ -134,7 +134,22 @@ p(x_t | \mathcal{Z}_{0:t}) = \frac{p(z_t | x_t) \times p(x_t | z_{0:t-1})}{p(z_t
 \end{align}
 
 
+\subsection{Prediction Model}
 
+\stnote{Miles, can you check if this math is right?}
+
+We assume that a person is likely to continue referring to the same
+object, but at each timestep has a small probability, $c$, of
+transitioning to a different object: 
+
+\begin{align}
+p(x_t | x_{t-1}) = \left\{  \begin{array}{ll}
+1-c &\mbox{if } x_t = x_{t-1}\\
+c &\mbox{otherwise}
+\end{array}\right.
+\end{align}
+
+In our experiments, $c$ has a value of XXX.
 
 
 \subsection{Observation Model}
@@ -198,10 +213,35 @@ We model speech with a simple bag of words model. We take the words in a given s
 p(s |x_t) = \displaystyle \prod_{w \in s} p(w | x_t)
 \end{align}
 
+\subsection{Training Model Parameters}
+
+We train model parameters by fitting each factor to a ground-truth
+distribution.
+
 
 \section{EVALUATION}
 
+We evaluate our model in simulation, comparing the full model to
+versions without multimodal information.  Additionally we assessed its
+performance on an RGB-D audio and video corpus of people referring to
+objects.  Finally we created an end-to-end robotic demonstration,
+demonstrated in the video attachement to our paper, and available
+online\footnote{video reference}. 
+
+\subsection{Simulation Results}
+
+\subsection{Real-world Corpus-Based Results}
+
+\subsection{Robotic Demonstration}
+
 \section{CONCLUSION}
+
+We have demonstrated a Bayes' filtering approach to interperting a
+person's multimodal language and gesture references to objects
+continoulsly in real time.  Our approach enables a robot to understand
+a person's references to objects in the real world.
+
+In the future we plan to expand our language model to
 
 
 \bibliographystyle{abbrvnat}
