@@ -3,6 +3,7 @@
 \overrideIEEEmargins                                      % Needed to meet printer requirements.
 \usepackage{natbib}
 \usepackage{graphicx}
+\usepackage[ruled]{algorithm2e}
 
 \title{\LARGE \bf
 Interpreting Multimodal Referring Expressions in Real Time}
@@ -71,7 +72,7 @@ to.
 
 \begin{figure}
 \centering
-\includegraphics[width=0.5\linewidth]{figures/baxter_scene_cropped.jpg}
+\includegraphics[width=1\linewidth]{figures/baxter_scene_cropped.jpg}
 \caption{Robots that collaborate with people need to understand their
   references to objects in the environment.  For example, if a person
   asks for a tool using language and gesture, the robot needs to
@@ -132,6 +133,8 @@ The measurement update combines the previous belief with the newest observation 
 \begin{align}
 p(x_t | \mathcal{Z}_{0:t}) = \frac{p(z_t | x_t) \times p(x_t | z_{0:t-1})}{p(z_t | z_{0:t-1})} \\\propto p(z_t | x_t) \times p(x_t | z_{0:t-1})
 \end{align}
+
+Algorithm~\ref{alg:algorithm} shows pseudocode for our approach.
 
 
 \subsection{Prediction Model}
@@ -217,6 +220,25 @@ p(s |x_t) = \displaystyle \prod_{w \in s} p(w | x_t)
 
 We train model parameters by fitting each factor to a ground-truth
 distribution.
+
+\begin{algorithm}
+    \DontPrintSemicolon
+    \KwIn{$bel(x_{t-1}), u_t, z_t$}
+    \BlankLine
+    \KwOut{$bel(x_t)$}
+    \BlankLine
+    \For{ $x_t$} {
+      $\bar{bel}(x_t) = $
+      \BlankLine
+      $bel(x_t) = $
+
+    }
+    \BlankLine
+      \stnote{Miles -- can you fill in the algorithm?  We shouldn't just reproduce a simple Bayes' filter; it should get into what specific things we had to do to make it work with multimodal input.}
+\caption{Interactive Bayes Filtering Algorithm} 
+\label{alg:algorithm}
+\end{algorithm}
+
 
 
 \section{EVALUATION}
