@@ -254,7 +254,45 @@ online\footnote{video reference}.
 
 \subsection{Real-world Corpus-Based Results}
 
+\begin{figure}
+\parbox{1\linewidth}{~\\~\\~\\~\\}
+\caption{Scene from our dataset.\label{fig:corpus_scene}}
+\end{figure}
+
+Our real-world experiments measured our algorithm's performance when a
+person referred to an object visually and with gesture.  The person
+was seated roughly five feet from a table which had several objects,
+as shown in Figure~\ref{fig:corpus_scene}.  We instructed them to
+refer to the object as if they were talking to another person, using
+language and gesture.  We indicted the object to refer to using a
+laser pointer, and we periodically shifted to a different object on a
+predetermined schedule.  They wore a microphone to pick up
+high-quality audio, and we tracked their body pose using the NITE
+tracker~\citep{tracker}.  We used the Google Voice Recognition package
+to recognize speech.  We used two Kinects: one pointed outward at the
+person, and one pointed down to recognize objects on the table.
+
+\begin{table}
+\begin{tabular}{cc}
+Language only &  XX\\
+Gesture only  &  XX\\
+Head only     &  XX\\
+Multimodal    &  XX\\
+\end{tabular}
+\caption{Real-world Results}
+\end{table}
+
 \subsection{Robotic Demonstration}
+
+Because our approach enables a robot to quickly and constantly monitor
+a person's references to an object, a robot can respond to these
+estimates in real time.  We demonstrate this behavior by enabling
+Baxter to demonstrate its certainty about what object is being
+referenced, this eliciting more feedback from the person.  When the
+robot is very unsure, its arm moves back and forth between the
+candidate objects.  When it is sure, then it moves with more
+precision.  The video shows this behavior, as a person provides more
+information about what object is being referred to by the person.
 
 \section{CONCLUSION}
 
@@ -263,7 +301,9 @@ person's multimodal language and gesture references to objects
 continoulsly in real time.  Our approach enables a robot to understand
 a person's references to objects in the real world.
 
-In the future we plan to expand our language model to
+In the future we plan to expand our language model to incorporate
+models of compositional semantics and lower-level visual features so
+that the robot is not limited to prespecified object models.
 
 
 \bibliographystyle{abbrvnat}
