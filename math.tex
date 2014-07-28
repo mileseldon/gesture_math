@@ -43,32 +43,36 @@ accurately identify objects continuously.
 In order for humans and robots to collaborate in complex tasks, robots
 must be able to understand people's references to objects in the
 external world.  To refer to objects, people use a combination of
-language, gesture, and body language such as eye gaze and looking.
-These signals are provided continuously to the robot, and a person's
-reference can quickly change based on new information about the
-domain.  For example, Figure~\ref{fig:example} shows a robot handing a
-tool to a human collaborator for a manufacturing task; in order to
-infer the correct tool to deliver, the robot must interpert a person's
-language and gesture over time.
+language, hand gestures, and body language such as eye gaze.  These
+signals are provided continuously to the robot over time, and can
+change rapidly as a person responds to their environment.  For
+example, Figure~\ref{fig:example} shows a robot handing a tool to a
+human collaborator for a manufacturing task.  For the robot to infer
+the correct tool to deliver, it must interpert a person's language and
+gesture over time.
 
 Most existing approaches for interpreting language and gesture rely on
 unimodal models that do not integrate the two information sources,
 even though people fluidly use language and gesture together.
 Approaches that fuse information from language and
 gesture~\citep{matuszek14} do not take into account that information
-appears to the system over a period of time.
+appears to the system over a period of time.  If a robot could exploit
+this temporal information, it can respond in real time to a person's
+input and indicate when it has understood; this backchannel feedback
+could enable a person to respond and provide additional clarifying
+input when the robot fails to understand.
 
-In contrast, we propose a Bayes' filtering approach for interpreting
-multimodal information from language and gesture~\citep{thrun08}.  Our
-framework relies on a factored observation probability that fuses
-information from language, hand gestures, and head gestures in real
-time to continously estimate the object a person is referring to in
-the real world.  We demonstrate our model in simulation, as well as
-providing quantitative results on a real-world RGB-D corpus of people
-referring to objects in the environment.  These results demonstrate
-that our approach quickly and accurately fuses multimodal information
-in real time to continously estimate the object a person is referring
-to.
+To support these types of interactions, we propose a Bayes' filtering
+approach for interpreting multimodal information from language and
+gesture~\citep{thrun08}.  Our framework relies on a factored
+observation probability that fuses information from language, hand
+gestures, and head gestures in real time to continously estimate the
+object a person is referring to in the real world.  We demonstrate our
+model in simulation, as well as providing quantitative results on a
+real-world RGB-D corpus of people referring to objects in the
+environment.  These results demonstrate that our approach quickly and
+accurately fuses multimodal information in real time to continously
+estimate the object a person is referring to.
 
 \begin{figure}
 \centering
@@ -268,7 +272,7 @@ language and gesture.  We indicted the object to refer to using a
 laser pointer, and we periodically shifted to a different object on a
 predetermined schedule.  They wore a microphone to pick up
 high-quality audio, and we tracked their body pose using the NITE
-tracker~\citep{tracker}.  We used the Google Voice Recognition package
+tracker~\citep{openni}.  We used the Google Voice Recognition package
 to recognize speech.  We used two Kinects: one pointed outward at the
 person, and one pointed down to recognize objects on the table.
 
