@@ -43,36 +43,32 @@ accurately identify objects continuously.
 In order for humans and robots to collaborate in complex tasks, robots
 must be able to understand people's references to objects in the
 external world.  To refer to objects, people use a combination of
-language, hand gestures, and body language such as eye gaze.  These
-signals are provided continuously to the robot over time, and can
-change rapidly as a person responds to their environment.  For
-example, Figure~\ref{fig:example} shows a robot handing a tool to a
-human collaborator for a manufacturing task.  For the robot to infer
-the correct tool to deliver, it must interpert a person's language and
-gesture over time.
+language, gesture, and body language such as eye gaze and looking.
+These signals are provided continuously to the robot, and a person's
+reference can quickly change based on new information about the
+domain.  For example, Figure~\ref{fig:example} shows a robot handing a
+tool to a human collaborator for a manufacturing task; in order to
+infer the correct tool to deliver, the robot must interpret a person's
+language and gesture over time.
 
 Most existing approaches for interpreting language and gesture rely on
 unimodal models that do not integrate the two information sources,
 even though people fluidly use language and gesture together.
 Approaches that fuse information from language and
 gesture~\citep{matuszek14} do not take into account that information
-appears to the system over a period of time.  If a robot could exploit
-this temporal information, it can respond in real time to a person's
-input and indicate when it has understood; this backchannel feedback
-could enable a person to respond and provide additional clarifying
-input when the robot fails to understand.
+appears to the system over a period of time.
 
-To support these types of interactions, we propose a Bayes' filtering
-approach for interpreting multimodal information from language and
-gesture~\citep{thrun08}.  Our framework relies on a factored
-observation probability that fuses information from language, hand
-gestures, and head gestures in real time to continously estimate the
-object a person is referring to in the real world.  We demonstrate our
-model in simulation, as well as providing quantitative results on a
-real-world RGB-D corpus of people referring to objects in the
-environment.  These results demonstrate that our approach quickly and
-accurately fuses multimodal information in real time to continously
-estimate the object a person is referring to.
+In contrast, we propose a Bayes' filtering approach for interpreting
+multimodal information from language and gesture~\citep{thrun08}.  Our
+framework relies on a factored observation probability that fuses
+information from language, hand gestures, and head gestures in real
+time to continuously estimate the object a person is referring to in
+the real world.  We demonstrate our model in simulation, as well as
+providing quantitative results on a real-world RGB-D corpus of people
+referring to objects in the environment.  These results demonstrate
+that our approach quickly and accurately fuses multimodal information
+in real time to continuously estimate the object a person is referring
+to.
 
 \begin{figure}
 \centering
@@ -91,12 +87,12 @@ interpreting a person's gestures rather than enabling a robot to
 generate pointing gestures.  A large body of work focuses on language
 understanding for robots~\citep{macmahon06, dzifcak09, kollar10,
   matuszek12}.  \citet{guadarrama14} presents a framework for
-interperting open-domain references to objects but focuses on
-interperting language rather than language combined with gesture.
+interpreting open-domain references to objects but focuses on
+interpreting language rather than language combined with gesture.
 
 Many existing approaches for interpreting gesture rely on fixed
 vocabularies of gesture, such as ``stop'' or
-``follow''~\citep{waldherr00, marge11} without a princepled way for
+``follow''~\citep{waldherr00, marge11} without a principled way for
 fusing information from language and gesture.  Our work unifies
 language and gesture interpretation into a single mathematical
 framework, and focuses on parameterized gestures such as pointing.
@@ -130,12 +126,12 @@ alternate performing a time update and a measurement update.  The time
 update updates the belief that the user is referring to a specific
 subset of objects given previous information:
 \begin{align}
-p(x_t | z_{0:t-1}) = \int p(x_t|x_{t-1})\times p(x_{t-1} | \mathcal{Z}_{0:t-1}) \text{d}x_{t-1}
+p(x_t | z_{0:t-1}) = \int p(x_t|x_{t-1})\times p(x_{t-1} | z_{0:t-1}) \text{d}x_{t-1}
 \end{align}
 
 The measurement update combines the previous belief with the newest observation to update each belief state: 
 \begin{align}
-p(x_t | \mathcal{Z}_{0:t}) = \frac{p(z_t | x_t) \times p(x_t | z_{0:t-1})}{p(z_t | z_{0:t-1})} \\\propto p(z_t | x_t) \times p(x_t | z_{0:t-1})
+p(x_t |z_{0:t}) = \frac{p(z_t | x_t) \times p(x_t | z_{0:t-1})}{p(z_t | z_{0:t-1})} \\\propto p(z_t | x_t) \times p(x_t | z_{0:t-1})
 \end{align}
 
 Algorithm~\ref{alg:algorithm} shows pseudocode for our approach.
@@ -143,8 +139,8 @@ Algorithm~\ref{alg:algorithm} shows pseudocode for our approach.
 
 \subsection{Prediction Model}
 
-\stnote{Miles, can you check if this math is right?}
-
+%\stnote{Miles, can you check if this math is right?}
+%Looks good!
 We assume that a person is likely to continue referring to the same
 object, but at each timestep has a small probability, $c$, of
 transitioning to a different object: 
@@ -172,7 +168,7 @@ $\langle l, r, h, s\rangle $ where:
 	\item $l$ represents the observed origin ($l_o$) and vector ($l_v$) for the left arm.
 	\item $r$ represents the observed origin  ($r_o$) and vector ($r_v$)  for the right arm .
 	\item $h$ represents the observed origin  ($h_o$) and vector ($h_v$)  for head.
-	\item $s$ represents the observed speech from the user, consisting of a list of words.
+	\item $s$ represents the observed speech from the user, consisting of a list of words. Do to the nature of current methods of speech recognition, we maintain all recognized speech from the previous XXX seconds as the current speech input. \menote{Should we look into discounting speech based on proximity to current time?}
 	\end{itemize}
 
 Formally, we have:
@@ -188,16 +184,13 @@ input from the person.
 \noindent{\bf Gesture.}  We model pointing gestures as a vector through three
 dimensional space. We calculate the angle between the gesture vector
 and the vector from the gesture origin to the mean of each cluster,
-and then use the PDF of a Gaussian with trained variance to determine
+and then use the PDF of a Gaussian ($\mathcal{N}$) with trained variance ($\sigma$) to determine
 the weight that should be assigned to that object. Let $\Phi(<origin>,
 <point>, <point>)$ give the angle between the two points with the
 given origin.
-%We calculate the probability of a gesture by examining every three dimensional particle (denoted as $q$) in an object and calculating the angle (function $\Phi$) between the vector formed by the gesture and the vector formed with that particle. We then use a Gaussian distribution with a variance ($\sigma$) found during training to calculate the probability of seeing that angle difference. We then take the product of each of these points and normalize it so that small objects with few particles don't always dominate the probability distribution. The probability of each gesture given the state is as follows:
 \begin{align}
 p(l | x_t) \propto \mathcal{N}(\mu_l=0, \sigma_l,\Phi(l_o, l_v, x_t))\\
 p(r | x_t) \propto \mathcal{N}(\mu_r=0, \sigma_r,\Phi(r_o, r_v, x_t))
-%p(l|x_t) =[\displaystyle \prod_{q \in x_t} \mathcal{N}(\mu_l=0, \sigma_l, \Phi(l_o,l_v, q))]^{(\frac{\sum_{x'\in\mathcal{X}} len(x'_q)}{len(x_q)})}\\
-%p(r|x_t) = [\displaystyle \prod_{q \in x_t} \mathcal{N}(\mu_r=0, \sigma_r, \Phi(r_o,r_v, q))]^{(\frac{\sum_{x'\in\mathcal{X}} len(x'_q)}{len(x_q)})}
 \end{align}
 
 \noindent{\bf Head Pose.}
@@ -206,12 +199,6 @@ Head pose is modeled in the same manner as arm gestures.
 p(h | x_t) \propto \mathcal{N}(\mu_h=0, \sigma_h,\Phi(h_o, h_v, x_t))
 %p(h|x_t) = [\displaystyle \prod_{q \in x_t} \mathcal{N}(\mu_h=0, \sigma_h, \Phi(h_o,h_v, q))]^{(\frac{\sum_{x'\in\mathcal{X}} len(x'_q)}{len(x_q)})}
 \end{align}
-
-
-%\menote{More concise way to show this? They are all the same besides
-%variance. I guess we could just do $\prod_{g\in\{h,l,r\}}$}
-% stefie10: I think it's fine as is.  It's okay to duplicate it.  I
-% think it's easier to understand that way.
 
 
 \noindent{\bf Speech.}
@@ -227,12 +214,14 @@ distribution.
 
 \begin{algorithm}
     \DontPrintSemicolon
-    \KwIn{$bel(x_{t-1}), u_t, z_t$}
+    \KwIn{$bel(x_{t-1}), u_t, z_t$ \menote{What is $u_t$?}}
     \BlankLine
     \KwOut{$bel(x_t)$}
     \BlankLine
     \For{ $x_t$} {
-      $\bar{bel}(x_t) = $
+      $\bar{bel}(x_t) = \displaystyle\prod_{x_{t-1}} p(x_t|x_{t-1})*bel(x_{t-1})$
+      \BlankLine
+      $\bar{bel}(x_t) = p(z_t | x_t) \times\bar{bel}(x_t)$
       \BlankLine
       $bel(x_t) = $
 
@@ -251,7 +240,7 @@ We evaluate our model in simulation, comparing the full model to
 versions without multimodal information.  Additionally we assessed its
 performance on an RGB-D audio and video corpus of people referring to
 objects.  Finally we created an end-to-end robotic demonstration,
-demonstrated in the video attachement to our paper, and available
+demonstrated in the video attachment to our paper, and available
 online\footnote{video reference}. 
 
 \subsection{Simulation Results}
@@ -272,7 +261,7 @@ language and gesture.  We indicted the object to refer to using a
 laser pointer, and we periodically shifted to a different object on a
 predetermined schedule.  They wore a microphone to pick up
 high-quality audio, and we tracked their body pose using the NITE
-tracker~\citep{openni}.  We used the Google Voice Recognition package
+tracker~\citep{tracker}.  We used the Google Voice Recognition package
 to recognize speech.  We used two Kinects: one pointed outward at the
 person, and one pointed down to recognize objects on the table.
 
