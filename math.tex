@@ -4,7 +4,6 @@
 \usepackage{natbib}
 \usepackage{graphicx}
 \usepackage[ruled]{algorithm2e}
-
 \title{\LARGE \bf
 Interpreting Multimodal Referring Expressions in Real Time}
 \author{Miles Eldon$^{1}$ and Stefanie Tellex$^{1}$
@@ -221,12 +220,26 @@ distribution.
     \For{ $x_t$} {
       $\bar{bel}(x_t) = \displaystyle\prod_{x_{t-1}} p(x_t|x_{t-1})*bel(x_{t-1})$
       \BlankLine
-      $\bar{bel}(x_t) = p(z_t | x_t) \times\bar{bel}(x_t)$
+      \textbf{if not} is\_null\_gesture(l)
       \BlankLine
-      $bel(x_t) = $
+      \Indp$\bar{bel}(x_t) = p(l | x_t) *  \bar{bel}(x_t)$
+      \BlankLine
+      \Indm\textbf{if not} is\_null\_gesture(r)
+      \BlankLine
+      \Indp$\bar{bel}(x_t) = p(r | x_t) *  \bar{bel}(x_t)$
+      \BlankLine
+      \Indm\textbf{if not} is\_null\_gesture(h)
+      \BlankLine
+      \Indp$\bar{bel}(x_t) = p(h | x_t) *  \bar{bel}(x_t)$
+      \BlankLine
+      \Indm\For{$w \in s$}{
+      	$\bar{bel}(x_t) = p(w | x_t) *  \bar{bel}(x_t)$
+      }
+      $bel(x_t) = \bar{bel}(x_t)$
 
     }
     \BlankLine
+    \menote{if speech: do stuff else 1. A cartoon of how this works, display multinomial over objects}
       \stnote{Miles -- can you fill in the algorithm?  We shouldn't just reproduce a simple Bayes' filter; it should get into what specific things we had to do to make it work with multimodal input.}
 \caption{Interactive Bayes Filtering Algorithm} 
 \label{alg:algorithm}
