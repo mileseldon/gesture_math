@@ -30,7 +30,7 @@ natural language or gesture, but a gap remains in creating real-time
 multimodal systems that simultaneously fuse information from language
 and gesture in a principled mathematical framework.  We define a
 multimodal Bayes' filter for interpreting referring expressions to
-object using language and gesture in real time.  We collected a new
+objects using language and gesture in real time.  We collected a new
 RGB-D and audio dataset of people referring to objects in a tabletop
 setting and demonstrate that our approach successfully integrates
 information from language and gesture in real time to quickly and
@@ -43,31 +43,42 @@ In order for humans and robots to collaborate in complex tasks, robots
 must be able to understand people's references to objects in the
 external world.  To refer to objects, people use a combination of
 language, gesture, and body language such as eye gaze and looking.
-These signals are provided continuously to the robot, and a person's
-reference can quickly change based on new information about the
-domain.  For example, Figure~\ref{fig:example} shows a robot handing a
-tool to a human collaborator for a manufacturing task; in order to
-infer the correct tool to deliver, the robot must interpret a person's
-language and gesture over time.
+People provide these signals continuously, and a person's reference
+can quickly change based on new information about the domain.  For
+example, Figure~\ref{fig:example} shows a robot handing a tool to a
+human collaborator for a manufacturing task; in order to infer the
+correct tool to deliver, the robot must interpret a person's language
+and gesture over time.
 
 Most existing approaches for interpreting language and gesture rely on
 unimodal models that do not integrate the two information sources,
 even though people fluidly use language and gesture together.
 Approaches that fuse information from language and
 gesture~\citep{matuszek14} do not take into account that information
-appears to the system over a period of time.
+appears to the system over a period of time.  Taking into account time
+is important because it is the foundation of seeing language and
+conversation as a {\em joint activity}~\citep{clark96} embedded in
+time.  Language and gesture co-occur and the relative timing of speech
+and gesture is critical for accurate understanding.  Furthermore,
+responding quickly to a person's input makes interaction more fluid
+and enables a robot to provide back-channel feedback based on its
+ability to understand: when it is confident, it can indicate that it
+is confident, and when it is unsure, it can indicate that.  This
+backchannel feedback elicit appropriate responses from the person:
+they will move to the next task when the robot understands, or provide
+more information to disambiguate when the person is confused.
 
-In contrast, we propose a Bayes' filtering approach for interpreting
-multimodal information from language and gesture~\citep{thrun08}.  Our
-framework relies on a factored observation probability that fuses
-information from language, hand gestures, and head gestures in real
-time to continuously estimate the object a person is referring to in
-the real world.  We demonstrate our model in simulation, as well as
-providing quantitative results on a real-world RGB-D corpus of people
-referring to objects in the environment.  These results demonstrate
-that our approach quickly and accurately fuses multimodal information
-in real time to continuously estimate the object a person is referring
-to.
+To provide a foundation for these capabilities, we propose a Bayes'
+filtering approach for interpreting multimodal information from
+language and gesture~\citep{thrun08}.  Our framework relies on a
+factored observation probability that fuses information from language,
+hand gestures, and head gestures in real time to continuously estimate
+the object a person is referring to in the real world.  We demonstrate
+our model in simulation, as well as providing quantitative results on
+a real-world RGB-D corpus of people referring to objects in the
+environment.  These results demonstrate that our approach quickly and
+accurately fuses multimodal information in real time to continuously
+estimate the object a person is referring to.
 
 \begin{figure}
 \centering
@@ -81,13 +92,30 @@ to.
 
 \section{RELATED WORK}
 
-Our approach is related to \citet{holladay14} but focuses on
-interpreting a person's gestures rather than enabling a robot to
-generate pointing gestures.  A large body of work focuses on language
-understanding for robots~\citep{macmahon06, dzifcak09, kollar10,
-  matuszek12}.  \citet{guadarrama14} presents a framework for
-interpreting open-domain references to objects but focuses on
-interpreting language rather than language combined with gesture.
+\citet{clark96} proposed that conversation is a {\em joint activity},
+a coordinated, collaborative processess akin to playing a duet or
+performing a walz.  The two participants must establish {\em common
+  ground}.  Common ground in dialog is distinct from symbol
+grounding~\citep{harnad90}, which is the problem of mapping from
+language to aspects of the external world.  Common ground, in a dialog
+sense, refers to the process of two conversational participants
+establishing joint understanding about the beliefs of the others.  To
+establish commond ground, people use {\em backchannel} feedback, such
+as head nods, looks of confusion, as well as explicit request for
+clarification such as asking a question.  These mechanisms enable the
+participants in a conversation to engage in a feedback loop
+
+A large body of work focuses on language understanding for
+robots~\citep{macmahon06, dzifcak09, kollar10, matuszek12}.  This work
+does not take into account the continuous nature of natural language
+input.  \citet{guadarrama14} presents a framework for interpreting
+open-domain references to objects but focuses on interpreting language
+rather than language combined with gesture.  \citet{cantrell10}
+presnted a framework for understanding language incrementally in real
+time dialog but did not use gesture and did not use a corpus-based
+evaluation of the approach.  Our approach is related to
+\citet{holladay14} but focuses on interpreting a person's gestures
+rather than enabling a robot to generate pointing gestures.
 
 Many existing approaches for interpreting gesture rely on fixed
 vocabularies of gesture, such as ``stop'' or
@@ -95,6 +123,8 @@ vocabularies of gesture, such as ``stop'' or
 fusing information from language and gesture.  Our work unifies
 language and gesture interpretation into a single mathematical
 framework, and focuses on parameterized gestures such as pointing.
+
+
 
 
 \citet{matuszek14} presented a multimodal framework for interpreting
@@ -105,6 +135,16 @@ continuously over time using a Bayes' filtering framework.  This
 approach enables the robot to continuously process new information and
 produce an estimate that converges over time to the correct object as
 new information is observed from the person.  
+
+LP and ICMI stuff
+
+\citet{dragan13} created a framework enabling a robot to produce
+gesture.  Similarly, \citet{tellex14} described an approach for
+enabling a robot to generate language by inverting a semantics
+framework.  Our long-germ aim is that by combining these types of
+generation approaches with real-time understanding, the robot will
+produce back-channel feedback that closes the loop of dialog and
+enable it to pariticpate in dialog as a joint activity.
 
 \section{TECHNICAL APPROACH}
 
@@ -167,26 +207,33 @@ $\langle l, r, h, s\rangle $ where:
 	\item $l$ represents the observed origin ($l_o$) and vector ($l_v$) for the left arm.
 	\item $r$ represents the observed origin  ($r_o$) and vector ($r_v$)  for the right arm .
 	\item $h$ represents the observed origin  ($h_o$) and vector ($h_v$)  for head.
-	\item $s$ represents the observed speech from the user, consisting of a list of words. Do to the nature of current methods of speech recognition, we maintain all recognized speech from the previous XXX seconds as the current speech input. \menote{Should we look into discounting speech based on proximity to current time?}
+	\item $s$ represents the observed speech from the user,
+          consisting of a list of words. Duo to the nature of current
+          methods of speech recognition, we maintain all recognized
+          speech from the previous XXX seconds as the current speech
+          input. \menote{Should we look into discounting speech based
+            on proximity to current time?}
 	\end{itemize}
 
 Formally, we have:
 \begin{align}
 p(z_t | x_t) &= p(l, r, h, s | x_t)\\
 \intertext{We factor assuming that each modality is independent of the others given the state (the true object that the person is referencing):}
-&= p(l | x_t) \times p(r | x_t) \times p(h | x_t) \times p(s | x_t)
+p(z_t | x_t) &= p(l | x_t) \times p(r | x_t) \times p(h | x_t) \times p(s | x_t)
 \end{align}
 
 \noindent The following sections describe how we model each type of
 input from the person.
 
-\noindent{\bf Gesture.}  We model pointing gestures as a vector through three
-dimensional space. We calculate the angle between the gesture vector
-and the vector from the gesture origin to the mean of each cluster,
-and then use the PDF of a Gaussian ($\mathcal{N}$) with trained variance ($\sigma$) to determine
-the weight that should be assigned to that object. Let $\Phi(<origin>,
-<point>, <point>)$ give the angle between the two points with the
-given origin.
+\noindent{\bf Gesture.}  We model pointing gestures as a vector
+through three dimensional space. We calculate the angle between the
+gesture vector and the vector from the gesture origin to the mean of
+each cluster, and then use the PDF of a Gaussian ($\mathcal{N}$) with
+trained variance ($\sigma$) to determine the weight that should be
+assigned to that object. We define a function $\mbox{A}(o, p_1, p_2)$ as the
+angle between the two points, $p_1$ and $p_2$ with the given origin,
+$o$.  Then 
+\stnote{I'm confused -- what is the third parameter to the Gaussian?}
 \begin{align}
 p(l | x_t) \propto \mathcal{N}(\mu_l=0, \sigma_l,\Phi(l_o, l_v, x_t))\\
 p(r | x_t) \propto \mathcal{N}(\mu_r=0, \sigma_r,\Phi(r_o, r_v, x_t))
@@ -200,16 +247,18 @@ p(h | x_t) \propto \mathcal{N}(\mu_h=0, \sigma_h,\Phi(h_o, h_v, x_t))
 \end{align}
 
 
-\noindent{\bf Speech.}
-We model speech with a simple bag of words model. We take the words in a given speech input and count how many words in this text match descriptors (denoted  $x_d$) of specific objects.
+\noindent{\bf Speech.}  We model speech as a bag of words. We
+take the words in a given speech input and count how many words in
+this text match descriptors (denoted $x_d$) of specific objects.
 \begin{align}
 p(s |x_t) = \displaystyle \prod_{w \in s} p(w | x_t)
 \end{align}
 
 \subsection{Training Model Parameters}
 
-We train model parameters by fitting each factor to a ground-truth
-distribution.
+We train model parameters by fitting each factor to an annotated
+training corpus.  We collected a dataset of people referring to an
+object, including language and gesture.  For each object.
 
 \begin{algorithm}
     \DontPrintSemicolon
@@ -258,7 +307,23 @@ online\footnote{video reference}.
 
 \subsection{Simulation Results}
 
-\subsection{Real-world Corpus-Based Results}
+We evaluated our approach in simulation by generating data from the
+model and assessing its accuracy at estimating the object being
+referred to.  This evaluation demonstrates that our approach
+successfully fuses multimodal information.  We report performance
+using language alone, gesture alone, and language combined with
+gesture.  Our accuracy metric is the fraction of time that the robot
+is pointing at the correct object.
+
+\begin{table}
+\begin{tabular}{lr}
+Language alone &  XX\\
+Gesture alone & XX\\
+Language and gesture &  XX
+\end{tabular}
+\end{table}
+
+\subsection{Real-World Corpus-Based Results}
 
 \begin{figure}
 \parbox{1\linewidth}{~\\~\\~\\~\\}
@@ -274,9 +339,16 @@ language and gesture.  We indicted the object to refer to using a
 laser pointer, and we periodically shifted to a different object on a
 predetermined schedule.  They wore a microphone to pick up
 high-quality audio, and we tracked their body pose using the NITE
-tracker~\citep{tracker}.  We used the Google Voice Recognition package
-to recognize speech.  We used two Kinects: one pointed outward at the
+tracker~\citep{openni}.  We used two Kinects: one pointed outward at the
 person, and one pointed down to recognize objects on the table.
+
+We used the Google Voice Recognition package to recognize speech.
+This package reports incremental output in real time as recognition
+proceeds.  Our training procedure works on actual speech recognition
+results rather than transcript speech, enabling the algorithm to adapt
+to the errors produced by the recognizer: if it returns ``cake''
+instead of ``cup,'' our language model will correctly associate the
+word ``cake'' with the ``cup'' object.
 
 \begin{table}
 \begin{tabular}{cc}
@@ -310,6 +382,15 @@ a person's references to objects in the real world.
 In the future we plan to expand our language model to incorporate
 models of compositional semantics and lower-level visual features so
 that the robot is not limited to prespecified object models.
+Additionally we aim to enable the robot to generate back-channel
+feedback based on its model.  \citet{dragan13} created a framework for
+generating legibile gesture, and we anticipate that enabling a robot
+to respond by pointing as in \citet{holladay14} when it is sure and
+reflecting its confusing when it is unsure.  Closing the loop will
+enable the human-robot dyad to increase efficiency and enable the
+robot to accurately infer the human's intent, naturally eliciting more
+information when it is confused and indicating that it has understood
+when it is sure.
 
 
 \bibliographystyle{abbrvnat}
