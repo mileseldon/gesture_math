@@ -41,7 +41,7 @@ accurately identify objects continuously.
 
 In order for humans and robots to collaborate in complex tasks, robots
 must be able to understand people's references to objects in the
-external world.  To refer to objects, people use a combination of
+external world.  For example, a robotic cooking assistant might fetch incredients and tools To refer to objects, people use a combination of
 language, gesture, and body language such as eye gaze and looking.
 People provide these signals continuously, and a person's reference
 can quickly change based on new information about the domain.  For
@@ -258,7 +258,17 @@ p(s |x_t) = \displaystyle \prod_{w \in s} p(w | x_t)
 
 We train model parameters by fitting each factor to an annotated
 training corpus.  We collected a dataset of people referring to an
-object, including language and gesture.  For each object.
+object, including language and gesture.  We instrumented human
+annotators with a microphone and initialized the gesture tracker.
+Then we instructed them to refer to an object which we indicated with
+a laser pointer; using a laser pointed meant that we avoided using
+language and gesture ourselfs to refer to the object.  We periodically
+changed the object to refer to, to simulate a dialog where the person
+periodically refers to different objects.  For example, the robot
+could be acting as a cooking assistant and retrieving different
+ingredients, or in a hospital fetching water, a phone, or a book for a
+patient recovering from surgery, who is unable to get out of bed.  We
+used this real-world dataset to train and evalaute our model.
 
 \begin{algorithm}
     \DontPrintSemicolon
@@ -313,14 +323,17 @@ referred to.  This evaluation demonstrates that our approach
 successfully fuses multimodal information.  We report performance
 using language alone, gesture alone, and language combined with
 gesture.  Our accuracy metric is the fraction of time that the robot
-is pointing at the correct object.
+is pointing at the correct object.  Table~\ref{table:sim_results}
+shows the results.
 
 \begin{table}
+\caption{Simulation Results\label{table:sim_results}}
 \begin{tabular}{lr}
 Language alone &  XX\\
 Gesture alone & XX\\
 Language and gesture &  XX
 \end{tabular}
+
 \end{table}
 
 \subsection{Real-World Corpus-Based Results}
