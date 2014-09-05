@@ -1,6 +1,7 @@
 \documentclass[letterpaper, 10 pt, conference]{ieeeconf} 
 \IEEEoverridecommandlockouts 
 \overrideIEEEmargins                                      % Needed to meet printer requirements.
+\usepackage{subfigure}
 \usepackage{natbib}
 \usepackage{graphicx}
 \usepackage[ruled]{algorithm2e}
@@ -299,12 +300,28 @@ used this real-world dataset to train and evalaute our model.
     }
     \BlankLine
     \menote{if speech: do stuff else 1. A cartoon of how this works, display multinomial over objects}
-      \stnote{Miles -- can you fill in the algorithm?  We shouldn't just reproduce a simple Bayes' filter; it should get into what specific things we had to do to make it work with multimodal input.}
+      \stnote{Miles -- can you fill in the algorithm?  We shouldn't just reproduce a simple Bayes' filter; it should get into what specific things we had to do to make it work with multimodal input.  In particular, I think the belief updates should include the gaussians and show how the parameters are changing in response to new information.}
 \caption{Interactive Bayes Filtering Algorithm} 
 \label{alg:algorithm}
 \end{algorithm}
 
+\begin{figure*}
+\centering
+\subfigure[Ambiguous gesture.]{\includegraphics[width=0.4\linewidth]{figures/cartoon1.pdf}}
+\subfigure[Clarification with language.]{\includegraphics[width=0.4\linewidth]{figures/cartoon2.pdf}}
+\caption{After an ambiguous gesture, the model has a uniform
+  distribution between two objects.  Clarification with language
+  causes a probabilistic update leaving the model highly confident  it has inferred the correct object. \label{fig:cartoon}}
+\end{figure*}
 
+Figure~\ref{fig:cartoon} shows an example of the system's execution.
+The person's gesture is ambiguous, but information from language, that
+is itself ambiguous (because there are two bowls in the scene, enables
+the system to infer the correct object.  Although in this example we
+are demonstarting the approach at two specific timesteps, the system
+is updating its distribution continuously, enabling it to fuse
+language and gesture as it occurs and quickly updating in response to
+new input from the person, verbal or nonverbal.
 
 \section{EVALUATION}
 
@@ -319,12 +336,18 @@ online\footnote{video reference}.
 
 We evaluated our approach in simulation by generating data from the
 model and assessing its accuracy at estimating the object being
-referred to.  This evaluation demonstrates that our approach
-successfully fuses multimodal information.  We report performance
-using language alone, gesture alone, and language combined with
-gesture.  Our accuracy metric is the fraction of time that the robot
-is pointing at the correct object.  Table~\ref{table:sim_results}
-shows the results.
+referred to.  We generate simulated pointing data for each hand, the
+face, as well as spoken utterences at each timestep according to the
+model parameters.  We then use these paramters to update the system's
+estimate of the object being referred to.  This evaluation
+demonstrates that our approach successfully fuses multimodal
+information.  We report performance using language alone, gesture
+alone, and language combined with gesture.  Our accuracy metric is the
+fraction of time that the robot is pointing at the correct object.
+Table~\ref{table:sim_results} shows the results.  These results
+demonstrate that the system is successfully able to fuse multi-modal
+information to achieve higher accuracy than each modality alone, but
+do not show performance in the real world.
 
 \begin{table}
 \caption{Simulation Results\label{table:sim_results}}
