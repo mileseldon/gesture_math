@@ -212,8 +212,7 @@ $\langle l, r, h, s\rangle $ where:
           consisting of a list of words. Duo to the nature of current
           methods of speech recognition, we maintain all recognized
           speech from the previous XXX seconds as the current speech
-          input. \menote{Should we look into discounting speech based
-            on proximity to current time?}
+          input.
 	\end{itemize}
 
 Formally, we have:
@@ -273,7 +272,7 @@ used this real-world dataset to train and evalaute our model.
 
 \begin{algorithm}
     \DontPrintSemicolon
-    \KwIn{$bel(x_{t-1}), u_t, z_t$ \menote{What is $u_t$?}}
+    \KwIn{$bel(x_{t-1}), z_t$}
     \BlankLine
     \KwOut{$bel(x_t)$}
     \BlankLine
@@ -299,8 +298,6 @@ used this real-world dataset to train and evalaute our model.
 
     }
     \BlankLine
-    \menote{if speech: do stuff else 1. A cartoon of how this works, display multinomial over objects}
-      \stnote{Miles -- can you fill in the algorithm?  We shouldn't just reproduce a simple Bayes' filter; it should get into what specific things we had to do to make it work with multimodal input.  In particular, I think the belief updates should include the gaussians and show how the parameters are changing in response to new information.}
 \caption{Interactive Bayes Filtering Algorithm} 
 \label{alg:algorithm}
 \end{algorithm}
@@ -336,25 +333,30 @@ online\footnote{video reference}.
 
 We evaluated our approach in simulation by generating data from the
 model and assessing its accuracy at estimating the object being
-referred to.  We generate simulated pointing data for each hand, the
+referenced.  We generate simulated pointing data for each hand, the
 face, as well as spoken utterences at each timestep according to the
 model parameters.  We then use these paramters to update the system's
-estimate of the object being referred to.  This evaluation
-demonstrates that our approach successfully fuses multimodal
-information.  We report performance using language alone, gesture
-alone, and language combined with gesture.  Our accuracy metric is the
-fraction of time that the robot is pointing at the correct object.
-Table~\ref{table:sim_results} shows the results.  These results
-demonstrate that the system is successfully able to fuse multi-modal
-information to achieve higher accuracy than each modality alone, but
-do not show performance in the real world.
+estimate of the object being referred to.
+Table~\ref{table:sim_results} shows the results.  Our accuracy metric
+is the fraction of time that the robot is pointing at the correct
+object.  We report performance using language alone, gesture alone,
+and language combined with gesture.  These results demonstrate that
+the system is successfully able to fuse multi-modal information to
+achieve higher accuracy than each modality alone, but do not show
+performance in the real world.This evaluation demonstrates that our
+approach successfully fuses multimodal information.  While a gesture
+and language output probabilistically referencing the true object are
+produced at each time step in simulation, the multimodal accuracy is
+robust to severe decreases in single modal accuracies.
+
 
 \begin{table}
 \caption{Simulation Results\label{table:sim_results}}
 \begin{tabular}{lr}
-Language alone &  XX\\
-Gesture alone & XX\\
-Language and gesture &  XX
+Language alone &  36.5\%\\
+Head alone & 50.9\%\\
+Arms alone & 62.4\%\\
+Language and gesture &  65.7\%
 \end{tabular}
 
 \end{table}
