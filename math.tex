@@ -356,7 +356,9 @@ the system to infer the correct object.  Although in this example we
 are demonstrating the approach at two specific timesteps, the system
 is updating its distribution continuously, enabling it to fuse
 language and gesture as it occurs and quickly updating in response to
-new input from the person, verbal or nonverbal.
+new input from the person, verbal or nonverbal.  Our approach runs at
+XXHz, continuously outputting an estimate of the object the person is
+referencing.
 
 \section{EVALUATION}
 
@@ -381,11 +383,12 @@ object.  We report performance using language alone, gesture alone,
 and language combined with gesture.  These results demonstrate that
 the system is successfully able to fuse multi-modal information to
 achieve higher accuracy than each modality alone, but do not show
-performance in the real world.This evaluation demonstrates that our
-approach successfully fuses multimodal information.  While a gesture
-and language output probabilistically referencing the true object are
-produced at each time step in simulation, the multimodal accuracy is
-robust to severe decreases in single modal accuracy.
+performance in the real world.  While a gesture and language output
+probabilistically referencing the true object are produced at each
+time step in simulation, the multimodal accuracy is robust to severe
+increases in single-modal noise.  \stnote{Can we create results
+  demonstrating this?  For example, a few more columns in table I for
+  different levels of language and gesture noise?}
 
 
 \begin{table}
@@ -421,14 +424,17 @@ person, and one pointed down to recognize objects on the table.
 
 We used the Google Voice Recognition package to recognize speech.
 This package reports incremental output in real time as recognition
-proceeds.  Our training procedure works on actual speech recognition
+proceeds, and we perform a model update each time a new word is
+perceived.  Our training procedure works on actual speech recognition
 results rather than transcript speech, enabling the algorithm to adapt
 to the errors produced by the recognizer: if it returns ``cake''
 instead of ``cup,'' our language model will correctly associate the
 word ``cake'' with the ``cup'' object.
 
+Results appear in Table~\ref{table:real_results}.  
+
 \begin{table}
-\caption{Real-world Results}
+\caption{Real-world Results\label{table:real_results}}
 \begin{tabular}{cc}
 Language only &  XX\\
 Gesture only  &  XX\\
@@ -461,13 +467,15 @@ models of compositional semantics and lower-level visual features so
 that the robot is not limited to prespecified object models.
 Additionally we aim to enable the robot to generate back-channel
 feedback based on its model.  \citet{dragan13} created a framework for
-generating legible gesture, and we anticipate that enabling a robot
-to respond by pointing as in \citet{holladay14} when it is sure and
+generating legible gesture, and we anticipate that enabling a robot to
+respond by pointing as in \citet{holladay14} when it is sure and
 reflecting its confusing when it is unsure.  Closing the loop will
 enable the human-robot dyad to increase efficiency and enable the
 robot to accurately infer the human's intent, naturally eliciting more
 information when it is confused and indicating that it has understood
-when it is sure.
+when it is sure.  This paper represents steps toward continuous
+language understanding and the vision presented by \citet{clark96} of
+language as joint activity.
 
 
 \bibliographystyle{abbrvnat}
