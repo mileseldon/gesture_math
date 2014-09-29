@@ -1,6 +1,7 @@
 \documentclass[letterpaper, 10 pt, conference]{ieeeconf} 
 \IEEEoverridecommandlockouts 
 \overrideIEEEmargins                                      % Needed to meet printer requirements.
+\usepackage{booktabs}
 \usepackage{subfigure}
 \usepackage{natbib}
 \usepackage{graphicx}
@@ -162,6 +163,10 @@ new information is observed from the person.
 
 LP and ICMI stuff
 
+POMDP dialog (Steve Young cites gesture stuff.)
+
+Matthias. 
+
 \citet{dragan13} created a framework enabling a robot to produce
 gesture.  Similarly, \citet{tellex14} described an approach for
 enabling a robot to generate language by inverting a semantics
@@ -219,7 +224,7 @@ In our experiments, $c$ has a value of XXX.  This assumption means
 that the robot's certainty slowly decays over time, in the absence of
 corroborating information.  Our framework integrates past language and
 gesture information but also quickly adapts to new, conflicting
-information because it assumes the person has changed objects.x
+information because it assumes the person has changed objects.
 
 
 \subsection{Observation Model}
@@ -262,6 +267,7 @@ angle between the two points, $p_1$ and $p_2$ with the given origin,
 $o$.  Then 
 \stnote{I'm confused -- what is the third parameter to the Gaussian?}
 \menote{It's the observed data, so its the probability of seeing the third argument with the given mean and variance}
+\stnote{So $\Phi$ is introduced here without being defined.  I'm not sure what it means.}
 \begin{align}
 p(l | x_t) \propto \mathcal{N}(\mu_l=0, \sigma_l,\Phi(l_o, l_v, x_t))\\
 p(r | x_t) \propto \mathcal{N}(\mu_r=0, \sigma_r,\Phi(r_o, r_v, x_t))
@@ -293,6 +299,9 @@ cause a discrete bump in probability according to the language model,
 which then decays over time.  
 
 \subsection{Training Model Parameters}
+
+\stnote{Miles, can you rewrite this section?  I think model parameters
+  are tuned by hand right now, and not learned from data.}
 
 We train model parameters by fitting each factor to an annotated
 training corpus.  We collected a dataset of people referring to an
@@ -359,7 +368,7 @@ is updating its distribution continuously, enabling it to fuse
 language and gesture as it occurs and quickly updating in response to
 new input from the person, verbal or nonverbal.  Our approach runs at
 30Hz, continuously outputting an estimate of the object the person is
-referencing.
+referencing.  \stnote{Is 30Hz correct?}
 
 \section{EVALUATION}
 
@@ -430,16 +439,27 @@ word ``cake'' with the ``cup'' object.
 
 Results appear in Table~\ref{table:real_results}.  
 
+\stnote{We need to add:
+\begin{itemize}
+\item what the numbers mean.  (Is this still \% of time that it was correct?)
+\item Table for  correctness at the end of the interaction (offset by something, as we talked about
+\item Confidence intervales
+\item Random.  I think it's 25\%, and if that's right we can just add a row.
+\end{itemize} 
+}
+
 \menote{A few things of interest we should note: Head results are poor because NITE doesn't perform fine grained head tracking. Arms have a much higher variance based on how much users rely on gestures vs specific language. I don't know how much we get into that, but I've seen 45 - 95\% accuracy on gesture, while I've seen 75-98\% multimodal, which will be shown once I add the confidence interval to the table, but we might want to discuss}
 \begin{table}
 \caption{Real-world Results\label{table:real_results}}
-\begin{tabular}{cc}
+\centering
+\begin{tabular}{lr}
+\toprule
 Language only &  35\%\\
 Gesture only  &  75\%\\
 Head only     &  24\%\\
-Multimodal  &  65\%\\
-Multimodal (no head) &85\%
-
+Multimodal (Language and Gesture) & {\bf 85\%}\\
+Multimodal (All) &  65\%\\
+\bottomrule
 \end{tabular}
 \end{table}
 
