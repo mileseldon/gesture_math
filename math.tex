@@ -261,6 +261,7 @@ assigned to that object. We define a function $\mbox{A}(o, p_1, p_2)$ as the
 angle between the two points, $p_1$ and $p_2$ with the given origin,
 $o$.  Then 
 \stnote{I'm confused -- what is the third parameter to the Gaussian?}
+\menote{It's the observed data, so its the probability of seeing the third argument with the given mean and variance}
 \begin{align}
 p(l | x_t) \propto \mathcal{N}(\mu_l=0, \sigma_l,\Phi(l_o, l_v, x_t))\\
 p(r | x_t) \propto \mathcal{N}(\mu_r=0, \sigma_r,\Phi(r_o, r_v, x_t))
@@ -357,7 +358,7 @@ are demonstrating the approach at two specific timesteps, the system
 is updating its distribution continuously, enabling it to fuse
 language and gesture as it occurs and quickly updating in response to
 new input from the person, verbal or nonverbal.  Our approach runs at
-XXHz, continuously outputting an estimate of the object the person is
+30Hz, continuously outputting an estimate of the object the person is
 referencing.
 
 \section{EVALUATION}
@@ -388,7 +389,7 @@ probabilistically referencing the true object are produced at each
 time step in simulation, the multimodal accuracy is robust to severe
 increases in single-modal noise.  \stnote{Can we create results
   demonstrating this?  For example, a few more columns in table I for
-  different levels of language and gesture noise?}
+  different levels of language and gesture noise?}\menote{Yeah, I can look into it}
 
 
 \begin{table}
@@ -411,18 +412,14 @@ Language and gesture &  65.7\%
 \end{figure}
 
 Our real-world experiments measured our algorithm's performance when a
-person referred to an object visually and with gesture.  The person
-was seated roughly five feet from a table which had several objects,
-as shown in Figure~\ref{fig:corpus_scene}.  We instructed them to
-refer to the object as if they were talking to another person, using
-language and gesture.  We indicted the object to refer to using a
+person referred to an object visually and with gesture.  The subject stood in front of a table with four objects placed approximately one foot apart, forming four corners of a square,
+as shown in Figure~\ref{fig:corpus_scene}.  We instructed subjects to ask for the indicated object in the most naturally way possible, using whatever combination of gesture and language they felt was appropriate. We indicted the object to refer to using a
 laser pointer, and we periodically shifted to a different object on a
 predetermined schedule.  They wore a microphone to pick up
 high-quality audio, and we tracked their body pose using the NITE
-tracker~\citep{openni}.  We used two Kinects: one pointed outward at the
-person, and one pointed down to recognize objects on the table.
+tracker~\citep{openni}.  We used a single Kinect that was able to capture both the user and the table.
 
-We used the Google Voice Recognition package to recognize speech.
+We used the HTML5 Speech Recognition package in conjunction with Google Chrome to recognize speech.
 This package reports incremental output in real time as recognition
 proceeds, and we perform a model update each time a new word is
 perceived.  Our training procedure works on actual speech recognition
@@ -433,13 +430,16 @@ word ``cake'' with the ``cup'' object.
 
 Results appear in Table~\ref{table:real_results}.  
 
+\menote{A few things of interest we should note: Head results are poor because NITE doesn't perform fine grained head tracking. Arms have a much higher variance based on how much users rely on gestures vs specific language. I don't know how much we get into that, but I've seen 45 - 95\% accuracy on gesture, while I've seen 75-98\% multimodal, which will be shown once I add the confidence interval to the table, but we might want to discuss}
 \begin{table}
 \caption{Real-world Results\label{table:real_results}}
 \begin{tabular}{cc}
-Language only &  XX\\
-Gesture only  &  XX\\
-Head only     &  XX\\
-Multimodal    &  XX\\
+Language only &  35\%\\
+Gesture only  &  75\%\\
+Head only     &  24\%\\
+Multimodal  &  65\%\\
+Multimodal (no head) &85\%
+
 \end{tabular}
 \end{table}
 
