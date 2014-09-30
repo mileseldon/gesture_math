@@ -434,7 +434,7 @@ high-quality audio, and we tracked their body pose using the NITE
 tracker~\citep{openni}.  We used a single Kinect that was able to capture both the user and the table.
 
 We used the HTML5 Speech Recognition package in conjunction with Google Chrome to recognize speech.
-This package reports incremental output in real time as recognition
+This package reports incremental output in \ref{¥}al time as recognition
 proceeds, and we perform a model update each time a new word is
 perceived.  Our training procedure works on actual speech recognition
 results rather than transcript speech, enabling the algorithm to adapt
@@ -442,21 +442,35 @@ to the errors produced by the recognizer: if it returns ``cake''
 instead of ``cup,'' our language model will correctly associate the
 word ``cake'' with the ``cup'' object.
 
-Results showing the percent of the time the estimated most likely object was the true object appear in Table~\ref{table:real_results} with 95\% confidence intervals. Additionally, we display accuracy at the end of an interaction in \ref{table:end_real}.
+Results showing the percent of the time the estimated most likely object was the true object appear in Table~\ref{table:real_results} with 95\% confidence intervals. Additionally, we display accuracy at the end of an interaction in \ref{table:end_real}. These results and confidence intervals are the results of 65 trials, where each trial is one object being referenced for some time. Each test subject performed several trials in succession to simulate real world interactivity such as shifting focus from one object to another.
 \begin{table}
 \caption{Real-world Results\label{table:real_results}}
 \centering
 \begin{tabular}{lr}
 \toprule
 Random & 25\%\\
-Language only &  32.7\% +/- 3.5\%\\
-Gesture only  &  73.31\% +/- 4\%\\
-Head only     &  23.4\% +/- 2\%\\
-Multimodal (Language and Gesture) & {\bf 80.52\% +/- 2\%}\\
-Multimodal (All) &  64.3\% +/- 3\%\\
+Language only &  32.4\% +/- 10\%\\
+Gesture only  &  73.12\% +/- 9\%\\
+Head only     &  21.67\% +/- 10\%\\
+Multimodal (Language and Gesture) & {\bf 81.99\% +/- 5.5\%}\\
+Multimodal (All) &  64.84\% +/- 8\%\\
 \bottomrule
 \end{tabular}
 \end{table}
+%\begin{table}
+%\caption{Real-world Results\label{table:real_results}}
+%\centering
+%\begin{tabular}{lr}
+%\toprule
+%Random & 25\%\\
+%Language only &  32.7\% +/- 3.5\%\\
+%Gesture only  &  73.31\% +/- 4\%\\
+%Head only     &  23.4\% +/- 2\%\\
+%Multimodal (Language and Gesture) & {\bf 80.52\% +/- 2\%}\\
+%Multimodal (All) &  64.3\% +/- 3\%\\
+%\bottomrule
+%\end{tabular}
+%\end{table}
 \begin{table}
 \caption{Real-world Results (End of Interaction)\label{table:end_real}}
 \centering
