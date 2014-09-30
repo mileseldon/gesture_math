@@ -93,7 +93,7 @@ ability to understand: when it is confident, it can indicate that it
 is confident, and when it is unsure, it can indicate that.  This
 backchannel feedback could elicit appropriate responses from the
 person: they will move to the next task when the robot understands, or
-provide more information to disambiguate when the person is confused.
+provide more information to disambiguate when the robot is confused.
 
 To provide a foundation for these capabilities, we propose a Bayes'
 filtering approach for interpreting multimodal information from
@@ -170,7 +170,7 @@ Matthias.
 \citet{dragan13} created a framework enabling a robot to produce
 gesture.  Similarly, \citet{tellex14} described an approach for
 enabling a robot to generate language by inverting a semantics
-framework.  Our long-germ aim is that by combining these types of
+framework.  Our long-term aim is that by combining these types of
 generation approaches with real-time understanding, the robot will
 produce back-channel feedback that closes the loop of dialog and
 enable it to participate in dialog as a joint activity.
@@ -241,10 +241,7 @@ $\langle l, r, h, s\rangle $ where:
 	\item $r$ represents the observed origin  ($r_o$) and vector ($r_v$)  for the right arm .
 	\item $h$ represents the observed origin  ($h_o$) and vector ($h_v$)  for head.
 	\item $s$ represents the observed speech from the user,
-          consisting of a list of words. Duo to the nature of current
-          methods of speech recognition, we maintain all recognized
-          speech from the previous XXX seconds as the current speech
-          input.
+          consisting of a list of words.
 	\end{itemize}
 
 Formally, we have:
@@ -399,7 +396,7 @@ increases in single-modal noise, as you can see in the table when we increase th
 \centering
 \caption{Simulation Results\label{table:sim_results}}
 \begin{tabular}{lcr}
-& $\sigma = 0.5$ & $\sigma = 1.0$\\
+& $\sigma^2 = 0.5$ & $\sigma^2 = 1.0$\\
 Language alone &  36.5\% & 37\%\\
 Head alone & 50.9\% & 35.8\%\\
 Arms alone & 62.4\% & 42.1\%\\
