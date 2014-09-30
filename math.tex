@@ -8,9 +8,8 @@
 \usepackage[ruled]{algorithm2e}
 \title{\LARGE \bf
 Interpreting Multimodal Referring Expressions in Real Time}
-\author{Miles Eldon$^{1}$ and Stefanie Tellex$^{1}$
-\thanks{$^{1}$Computer Science Department, Brown University}
-}
+\author{Miles Eldon, David Whitney, Stefanie Tellex\\Brown University}
+
 
 \usepackage{amsfonts, amssymb, amsmath}
 \usepackage[usenames,dvipsnames]{color}
@@ -118,6 +117,17 @@ estimate the object a person is referencing.  Additionally, we
 demonstrate a robot providing backchannel responses in real-time to a
 person's language and gesture input.
 
+\begin{figure*}
+\centering
+\subfigure[Ambiguous gesture.]{\includegraphics[width=0.49\linewidth]{figures/cartoon1.pdf}}
+\subfigure[Clarification with language.]{\includegraphics[width=0.49\linewidth]{figures/cartoon2.pdf}}
+\caption{After an ambiguous gesture, the model has a uniform
+  distribution between two objects (a).  The robot responds by
+  indicating confusion.  Clarification with language causes a
+  probabilistic update leaving the model highly confident it has
+  inferred the correct object (b).  The robot responds by smiling and
+  pointing to the correct object. \label{fig:cartoon}}
+\end{figure*}
 
 \section{RELATED WORK}
 
@@ -165,6 +175,8 @@ framework, and focuses on parameterized gestures such as pointing.
 
 
 
+
+
 \citet{matuszek14} presented a multimodal framework for interpreting
 unscripted references to tabletop objects using language and gesture.
 Our approach similarly focuses on tabletop objects but uses language,
@@ -189,6 +201,8 @@ produce back-channel feedback that closes the loop of dialog and
 enable it to participate in dialog as a joint activity.
 
 \section{TECHNICAL APPROACH}
+
+
 
 Our aim is to estimate a distribution over the object that a person is
 referring to given language and gesture inputs.  We frame the problem
@@ -233,6 +247,7 @@ c &\mbox{otherwise}
 \end{array}\right.
 \end{align}
 
+\stnote{move to model parameters and give the value}
 In our experiments, $c$ has a value of XXX.  This assumption means
 that the robot's certainty slowly decays over time, in the absence of
 corroborating information.  Our framework integrates past language and
@@ -301,15 +316,45 @@ p(s |x_t) = \displaystyle \prod_{w \in s} p(w | x_t)
 
 \subsection{Null Words and Gesture}
 
-To account for continuous gesture and non-continuous speech input, we have both null poses and speech.
-When no words are spoken, we assume a null word which has a uniform
-distribution over the objects.  This effect means that spoken words
-cause a discrete bump in probability according to the language model,
-which then decays over time. While gesture remains a continuous input throughout the entire interaction, many gestures have little or no meaning. To allow for these without overloading the model with noise, we also calculate the angle between each arm vector and each foot. If the angle between the arms and a foot is smaller than the angle between the arms and any object, we assume that the user is simply in a  "resting" pose, and don't incorporate that information from that arm into that update iteration. This creates a more robust model, rather than simply defaulting to the lowest vertical object whenever a user puts their arms to their sides.
+To account for continuous gesture and non-continuous speech input, we
+have both null poses and speech.  When no words are spoken, we assume
+a null word which has a uniform distribution over the objects.  This
+effect means that spoken words cause a discrete bump in probability
+according to the language model, which then decays over time. While
+gesture remains a continuous input throughout the entire interaction,
+many gestures have little or no meaning. To allow for these without
+overloading the model with noise, we also calculate the angle between
+each arm vector and each foot. If the angle between the arms and a
+foot is smaller than the angle between the arms and any object, we
+assume that the user is in a resting pose, and do not incorporate that
+information from that arm into that update iteration. This effect
+means the model stops updating when the person's arms are at their
+side.
+
+\stnote{So are continuous gestures handled the same as continuous
+  words?  How come we don't treat the null gesture as uniform over the
+  four objects, but instead skip doing the update?  I think we should
+  treat null gesture the same as null words.}
 
 \subsection{Model Parameters}
-We generated model parameters by hand, using trial and error with several subjects to fine tune them. 
-We would gesture at an object while observing the confidence distribution and compare that to our personal belief of accuracy. We then lowering the transition probability if we felt confidence dropped too fast when a gesture ended, decreasing variance if we felt that  confidence didn't increase fast enough when we gestured. When we agreed with the control flow of the program, we committed those parameters. We considered collecting and annotating a data set to train the model parameters, however with the subjectivity of gesture, we found our initial process both accurate and expedient. We generated the language model by hand, adding to it based on results of our first user studies.
+We tuned model parameters by hand, using trial and error with several
+subjects to fine tune them.  We considered collecting and annotating a
+data set to train the model parameters, however with the subjectivity
+of gesture, we found our initial process both accurate and
+expedient. We generated the language model by hand, adding to it based
+on results of our first user studies.  We expect that as we add larger
+sets of objects, a language model trained using data from Amazon
+Mechanical Turk will be necessary to increase robustness over a larger
+set of objects.
+
+\stnote{Can you list model parameters and their exact values?  We
+  should say what each model parameter was and where it came from. The
+  covariance of the Gaussians, and the language model?  We don't have
+  to list all the words in the language model, but we should say we
+  trained a unigram model by writing descriptions of each object along
+  with misidentifications from the speech recognition system.}
+
+
 %We train model parameters by fitting each factor to an annotated
 %training corpus.  We collected a dataset of people referring to an
 %object, including language and gesture.  We instrumented human
@@ -356,28 +401,26 @@ We would gesture at an object while observing the confidence distribution and co
 \label{alg:algorithm}
 \end{algorithm}
 
-\begin{figure*}
-\centering
-\subfigure[Ambiguous gesture.]{\includegraphics[width=0.49\linewidth]{figures/cartoon1.pdf}}
-\subfigure[Clarification with language.]{\includegraphics[width=0.49\linewidth]{figures/cartoon2.pdf}}
-\caption{After an ambiguous gesture, the model has a uniform
-  distribution between two objects (a).  The robot responds by
-  indicating confusion.  Clarification with language causes a
-  probabilistic update leaving the model highly confident it has
-  inferred the correct object (b).  The robot responds by smiling and
-  pointing to the correct object. \label{fig:cartoon}}
-\end{figure*}
-
 Figure~\ref{fig:cartoon} shows an example of the system's execution.
-The person's gesture is ambiguous, but information from language, that
-is itself ambiguous (because there are two bowls in the scene, enables
-the system to infer the correct object.  Although in this example we
-are demonstrating the approach at two specific timesteps, the system
-is updating its distribution continuously, enabling it to fuse
-language and gesture as it occurs and quickly updating in response to
-new input from the person, verbal or nonverbal.  Our approach runs at
-14Hz, including a 30Hz sleep cycle, on an Asus machine with 8 2.4 GHz Intel Cores that is also performing all perceptual and network processing, continuously outputting an estimate of the object the person is
-referencing.
+The person's gesture is ambiguous, and the system initially infers an
+approximately bimodal distribution between the orange bowl and silver
+spoon.  The robot indicates it has not understood by showing a
+confused face.  This reaction elicits a disambiguating response from
+the person, who says, ``the spoon.''  The model incorporates
+information from language and infers the person is referring to the
+silver spoon.  The robot indicates it has understood with a facial
+expression and by pointing to the correct object.  Note that the
+person's linguistic response was itself ambiguous, but provided
+complementary information to the person's gesture, leading to overall
+success at interpreting their intent.
+
+Although in this example we are demonstrating the approach at two
+specific timesteps, the system is updating its distribution
+continuously, enabling it to fuse language and gesture as it occurs
+and quickly updating in response to new input from the person, verbal
+or nonverbal.  Our approach runs at 14Hz, including a 30Hz sleep
+cycle, on an Asus machine with 8 2.4 GHz Intel Cores that is also
+performing all perceptual and network processing. 
 
 \section{EVALUATION}
 
