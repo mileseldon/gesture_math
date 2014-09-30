@@ -260,17 +260,13 @@ input from the person.
 \noindent{\bf Gesture.}  We model pointing gestures as a vector
 through three dimensional space. We calculate the angle between the
 gesture vector and the vector from the gesture origin to the mean of
-each cluster, and then use the PDF of a Gaussian ($\mathcal{N}$) with
-trained variance ($\sigma$) to determine the weight that should be
+each cluster, and then use the PDF of a Gaussian ($\mathcal{N}$) with variance ($\sigma$) to determine the weight that should be
 assigned to that object. We define a function $\mbox{A}(o, p_1, p_2)$ as the
 angle between the two points, $p_1$ and $p_2$ with the given origin,
 $o$.  Then 
-\stnote{I'm confused -- what is the third parameter to the Gaussian?}
-\menote{It's the observed data, so its the probability of seeing the third argument with the given mean and variance}
-\stnote{So $\Phi$ is introduced here without being defined.  I'm not sure what it means.}
 \begin{align}
-p(l | x_t) \propto \mathcal{N}(\mu_l=0, \sigma_l,\Phi(l_o, l_v, x_t))\\
-p(r | x_t) \propto \mathcal{N}(\mu_r=0, \sigma_r,\Phi(r_o, r_v, x_t))
+p(l | x_t) \propto \mathcal{N}(\mu_l=0, \sigma_l,A(l_o, l_v, x_t))\\
+p(r | x_t) \propto \mathcal{N}(\mu_r=0, \sigma_r,A(r_o, r_v, x_t))
 \end{align}
 
 If the person's arm is more than a certain angle away from the table,
@@ -281,8 +277,7 @@ estimate of the objects being referenced.
 \noindent{\bf Head Pose.}
 Head pose is modeled in the same manner as arm gestures.
 \begin{align}
-p(h | x_t) \propto \mathcal{N}(\mu_h=0, \sigma_h,\Phi(h_o, h_v, x_t))
-%p(h|x_t) = [\displaystyle \prod_{q \in x_t} \mathcal{N}(\mu_h=0, \sigma_h, \Phi(h_o,h_v, q))]^{(\frac{\sum_{x'\in\mathcal{X}} len(x'_q)}{len(x_q)})}
+p(h | x_t) \propto \mathcal{N}(\mu_h=0, \sigma_h,A(h_o, h_v, x_t))
 \end{align}
 
 
@@ -296,30 +291,28 @@ p(s |x_t) = \displaystyle \prod_{w \in s} p(w | x_t)
 
 \subsection{Null Words and Gesture}
 
-\stnote{Broaden this to talk about words and gesture}
+To account for continuous gesture and non-continuous speech input, we have both null poses and speech.
 When no words are spoken, we assume a null word which has a uniform
 distribution over the objects.  This effect means that spoken words
 cause a discrete bump in probability according to the language model,
-which then decays over time.  
+which then decays over time. While gesture remains a continuous input throughout the entire interaction, many gestures have little or no meaning. To allow for these without overloading the model with noise, we also calculate the angle between each arm vector and each foot. If the angle between the arms and a foot is smaller than the angle between the arms and any object, we assume that the user is simply in a  "resting" pose, and don't incorporate that information from that arm into that update iteration. This creates a more robust model, rather than simply defaulting to the lowest vertical object whenever a user puts their arms to their sides.
 
-\subsection{Training Model Parameters}
-
-\stnote{Miles, can you rewrite this section?  I think model parameters
-  are tuned by hand right now, and not learned from data.}
-
-We train model parameters by fitting each factor to an annotated
-training corpus.  We collected a dataset of people referring to an
-object, including language and gesture.  We instrumented human
-annotators with a microphone and initialized the gesture tracker.
-Then we instructed them to refer to an object which we indicated with
-a laser pointer; using a laser pointed meant that we avoided using
-language and gesture ourselves to refer to the object.  We periodically
-changed the object to refer to, to simulate a dialog where the person
-periodically refers to different objects.  For example, the robot
-could be acting as a cooking assistant and retrieving different
-ingredients, or in a hospital fetching water, a phone, or a book for a
-patient recovering from surgery, who is unable to get out of bed.  We
-used this real-world dataset to train and evaluate our model.
+\subsection{Model Parameters}
+We generated model parameters by hand, using trial and error with several subjects to fine tune them. 
+We would gesture at an object while observing the confidence distribution and compare that to our personal belief of accuracy. We then lowering the transition probability if we felt confidence dropped too fast when a gesture ended, decreasing variance if we felt that  confidence didn't increase fast enough when we gestured. When we agreed with the control flow of the program, we committed those parameters. We considered collecting and annotating a data set to train the model parameters, however with the subjectivity of gesture, we found our initial process both accurate and expedient. We generated the language model by hand, adding to it based on results of our first user studies.
+%We train model parameters by fitting each factor to an annotated
+%training corpus.  We collected a dataset of people referring to an
+%object, including language and gesture.  We instrumented human
+%annotators with a microphone and initialized the gesture tracker.
+%Then we instructed them to refer to an object which we indicated with
+%a laser pointer; using a laser pointed meant that we avoided using
+%language and gesture ourselves to refer to the object.  We periodically
+%changed the object to refer to, to simulate a dialog where the person
+%periodically refers to different objects.  For example, the robot
+%could be acting as a cooking assistant and retrieving different
+%ingredients, or in a hospital fetching water, a phone, or a book for a
+%patient recovering from surgery, who is unable to get out of bed.  We
+%used this real-world dataset to train and evaluate our model.
 
 \begin{algorithm}
     \DontPrintSemicolon
@@ -371,9 +364,8 @@ are demonstrating the approach at two specific timesteps, the system
 is updating its distribution continuously, enabling it to fuse
 language and gesture as it occurs and quickly updating in response to
 new input from the person, verbal or nonverbal.  Our approach runs at
-30Hz, continuously outputting an estimate of the object the person is
-referencing.  \stnote{rostopic info to get true frequency, and say
-  something about the machine.  Say machine is doing all perceptual and network processing.}
+14Hz, including a 30Hz sleep cycle, on an Asus machine with 8 2.4 GHz Intel Cores that is also performing all perceptual and network processing, continuously outputting an estimate of the object the person is
+referencing.
 
 \section{EVALUATION}
 
@@ -401,19 +393,17 @@ achieve higher accuracy than each modality alone, but do not show
 performance in the real world.  While a gesture and language output
 probabilistically referencing the true object are produced at each
 time step in simulation, the multimodal accuracy is robust to severe
-increases in single-modal noise.  \stnote{Can we create results
-  demonstrating this?  For example, a few more columns in table I for
-  different levels of language and gesture noise?}\menote{Yeah, I can look into it}
-
+increases in single-modal noise, as you can see in the table when we increase the sample variance. 
 
 \begin{table}
 \centering
 \caption{Simulation Results\label{table:sim_results}}
-\begin{tabular}{lr}
-Language alone &  36.5\%\\
-Head alone & 50.9\%\\
-Arms alone & 62.4\%\\
-Language and gesture &  65.7\%
+\begin{tabular}{lcr}
+& $\sigma = 0.5$ & $\sigma = 1.0$\\
+Language alone &  36.5\% & 37\%\\
+Head alone & 50.9\% & 35.8\%\\
+Arms alone & 62.4\% & 42.1\%\\
+Language and gesture &  65.7\% & 54.1\%
 \end{tabular}
 
 \end{table}
@@ -442,28 +432,32 @@ to the errors produced by the recognizer: if it returns ``cake''
 instead of ``cup,'' our language model will correctly associate the
 word ``cake'' with the ``cup'' object.
 
-Results appear in Table~\ref{table:real_results}.  
-
-\stnote{We need to add:
-\begin{itemize}
-\item what the numbers mean.  (Is this still \% of time that it was correct?)
-\item Table for  correctness at the end of the interaction (offset by something, as we talked about
-\item Confidence intervales
-\item Random.  I think it's 25\%, and if that's right we can just add a row.
-\end{itemize} 
-}
-
-\menote{A few things of interest we should note: Head results are poor because NITE doesn't perform fine grained head tracking. Arms have a much higher variance based on how much users rely on gestures vs specific language. I don't know how much we get into that, but I've seen 45 - 95\% accuracy on gesture, while I've seen 75-98\% multimodal, which will be shown once I add the confidence interval to the table, but we might want to discuss}
+Results showing the percent of the time the estimated most likely object was the true object appear in Table~\ref{table:real_results} with 95\% confidence intervals. Additionally, we display accuracy at the end of an interaction in \ref{table:end_real}.
 \begin{table}
 \caption{Real-world Results\label{table:real_results}}
 \centering
 \begin{tabular}{lr}
 \toprule
-Language only &  35\%\\
-Gesture only  &  75\%\\
-Head only     &  24\%\\
-Multimodal (Language and Gesture) & {\bf 85\%}\\
-Multimodal (All) &  65\%\\
+Random & 25\%\\
+Language only &  32.7\% +/- 3.5\%\\
+Gesture only  &  73.31\% +/- 4\%\\
+Head only     &  23.4\% +/- 2\%\\
+Multimodal (Language and Gesture) & {\bf 80.52\% +/- 2\%}\\
+Multimodal (All) &  64.3\% +/- 3\%\\
+\bottomrule
+\end{tabular}
+\end{table}
+\begin{table}
+\caption{Real-world Results (End of Interaction)\label{table:end_real}}
+\centering
+\begin{tabular}{lr}
+\toprule
+Random & 25\%\\
+Language only &  46.15\%\\
+Gesture only  &  80.0\%\\
+Head only     & 18.46\%\\
+Multimodal (Language and Gesture) & {\bf 90.77\%}\\
+Multimodal (All) &  61.54\%\\
 \bottomrule
 \end{tabular}
 \end{table}
