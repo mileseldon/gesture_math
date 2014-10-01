@@ -24,32 +24,35 @@ Interpreting Multimodal Referring Expressions in Real Time}
 \pagestyle{empty}
 
 \begin{abstract}
-Robots that collaborate with humans must be able to identify objects
-used for shared tasks, for example tools such as a knife for
-assistance at cooking, or parts such as a screw on a factory floor.
 Humans communicate about objects using language and gesture, fusing
-information from multiple modalities over time.  Existing work has
-addressed this problem in single modalities, such as natural language
-or gesture, or fused modalities in non-realtime systems, but a gap
-remains in creating systems that simultaneously fuse information from
-language and gesture over time.  To address this problem, we define a
-multimodal Bayes' filter for interpreting referring expressions to
-objects.  Our approach outputs a distribution over the referent object
-at 14Hz, updating dynamically as it receives new observations of the
-person's spoken words and gestures.  This real-time update enables a
-robot to dynamically respond with backchannel feedback while a person
-is still communicating, pointing toward a mathematical framework for
-human-robot communication as a {\em joint activity}~\citep{clark96}.
-Moreover, our approach takes into account rich timing information in
-the language as words are spoken by processing incremental output from
-the speech recognition system, traditionally ignored when processing a
-command as an entire sentence.  It quickly adapts when the person
-refers to a new object.  We collected a new dataset of people
-referring to objects in a tabletop setting and demonstrate that our
-approach is able to infer the correct object with 90\% accuracy.  Additionally, we
-demonstrate that our approach enables a Baxter robot to provide
-back-channel responses in real-time.
+information from multiple modalities over time, and robots need to
+interpret their communication in order to collaborate with them on
+shared tasks.  Existing work has addressed this problem in single
+modalities, such as natural language or gesture, or fused modalities
+in non-realtime systems, but a gap remains in creating systems that
+simultaneously fuse information from language and gesture
+incrementally, over time. Processing communicative input incrementally
+has the potential to speed up the robot's reaction time, as well as
+incorporate the timing of words and gesture into the understanding
+process, increasing the robot's speed and accuracy at interpreting the
+person's mental state.  To address this problem, we define a
+multimodal Bayes' filter for interpreting a person's referring
+expressions to objects.  Our approach outputs a distribution over the
+referent object at 14Hz, updating dynamically as it receives new
+observations of the person's spoken words and gestures.  We collected
+a new dataset of people referring to objects in a tabletop setting and
+demonstrate that our approach is able to infer the correct object with
+90\% accuracy.  Additionally, we demonstrate that our approach enables
+a Baxter robot to provide back-channel responses in real-time,
+pointing toward a mathematical framework for human-robot communication
+as a {\em joint activity}~\citep{clark96}.
 \end{abstract}
+
+%% Moreover, our approach takes
+%% into account rich timing information in the language as words are
+%% spoken by processing incremental output from the speech recognition
+%% system, traditionally ignored when processing a command as an entire
+%% sentence.  It quickly adapts when the person refers to a new object.
 
 \section{INTRODUCTION}
 
@@ -69,10 +72,11 @@ confused or interrupting to ask a question when they do not.
 \citet{clark96} refers to this continuous dance as {\em joint
   activity} and compares language use to playing a duet because of its
 collaborative nature, where both parties act to establish common
-ground and reduce uncertainty.  Language and gesture co-occur and the
-relative timing of speech and gesture is critical for accurate
-understanding.  Responding quickly to a person's input makes
-interaction more fluid and enables a robot to provide back-channel
+ground and reduce uncertainty.  
+
+Responding quickly and incorporating the relative timing of speech and
+gesture is critical for accurate understanding.  Fast responses make
+interaction more fluid and enable a robot to provide backchannel
 feedback based on its ability to understand: when it is confident, it
 can indicate that it is confident, and when it is unsure, it can
 indicate that as well.  This backchannel feedback could elicit
@@ -83,8 +87,7 @@ disambiguate when the robot is confused.
 
 Despite the importance of real-time response to multi-modal input,
 existing unimodal models do not integrate information from language
-and gesture~\citep{matuszek14, tellex11, kollar10} , even though
-people fluidly use language and gesture together.  Approaches that
+and gesture~\citep{matuszek14, tellex11, kollar10}.  Approaches that
 fuse information from language and gesture~\citep{matuszek14} do not
 take into account that information appears to the system over a period
 of time.  These approaches make it impossible for a robot to provide
@@ -107,15 +110,15 @@ partial utterances.
 To provide a foundation for these capabilities, we propose a Bayes'
 filtering approach for interpreting multimodal information from
 language and gesture~\citep{thrun08}.  Our framework relies on a
-factored observation probability that fuses information from language,
-hand gestures, and head gestures in real time to continuously estimate
-the object a person is referring to in the real world.  We demonstrate
-our model in simulation, as well as providing quantitative results on
-a real-world RGB-D corpus of people referring to objects in the
-environment.  These results demonstrate that our approach quickly and
-accurately fuses multimodal information in real time to continuously
-estimate the object a person is referencing.  Additionally, we
-demonstrate a robot providing backchannel responses in real-time to a
+factored observation probability that fuses information from language
+and gesture in real time to continuously estimate the object a person
+is referring to in the real world.  We demonstrate our model in
+simulation, as well as providing quantitative results on a real-world
+RGB-D corpus of people referring to objects with language and gesture.
+These results show that our approach quickly and accurately fuses
+multimodal information in real time to continuously estimate the
+object a person is referencing.  Additionally, we demonstrate a robot
+that uses our model to provide backchannel responses in real-time to a
 person's language and gesture input.
 
 \begin{figure*}
@@ -140,8 +143,8 @@ participants establishing joint understanding about the beliefs of the
 others\footnote{Note that common ground is in dialog is distinct from
   {\em symbol grounding} proposed by~\citet{harnad90}, which is the
   problem of mapping from language to aspects of the external world.}.
-To establish common ground, people use {\em backchannel} feedback,
-such as head nods, looks of confusion, as well as explicit request for
+To establish common ground, people use backchannel feedback, such as
+head nods, looks of confusion, as well as explicit request for
 clarification such as asking a question.  These mechanisms enable the
 participants in a conversation to engage in a feedback loop to
 iteratively establish common ground as the conversation progresses.
@@ -153,7 +156,7 @@ establish common ground and actively communicate to reduce errors.
 A large body of work focuses on language understanding for
 robots~\citep{macmahon06, dzifcak09, kollar10, matuszek12}.  This work
 does not take into account the continuous nature of natural language
-input, and requires sentences or at least chunks of words
+input, and requires sentences or at least chunks of words before
 understanding can take place.  Our approach, in contrast, incorporates
 information from each word as it is processed by the speech
 recognition system, integrating word information over time and fusing
@@ -180,26 +183,24 @@ framework, and focuses on parameterized gestures such as pointing.
 
 \citet{matuszek14} presented a multimodal framework for interpreting
 unscripted references to tabletop objects using language and gesture.
-Our approach similarly focuses on tabletop objects but uses language,
-gesture, and head pose, and integrates these disparate data sources
-continuously over time using a Bayes' filtering framework.  This
-approach enables the robot to continuously process new information and
-produce an estimate that converges over time to the correct object as
-new information is observed from the person.  
+Our approach similarly focuses on tabletop objects but integrates
+language and gesture continuously over time using a Bayes' filtering
+framework.  This approach enables the robot to continuously process
+new information and produce an estimate that converges over time to
+the correct object as new information is observed from the person.
 
 POMDP-approaches to dialog~\citep{young13, young10} have been extended
 to incorporate gesture and noise models, and our approach is related
 to these types of belief updates.  We are eager to explore enabling a
 robot to adaptively respond to its estimate of which object a person
-is referring to, leading to backchannels.
-
-\citet{dragan13} created a framework enabling a robot to produce
-gesture.  Similarly, \citet{tellex14} described an approach for
-enabling a robot to generate language by inverting a semantics
-framework.  Our long-term aim is that by combining these types of
-generation approaches with real-time understanding, the robot will
-produce back-channel feedback that closes the loop of dialog and
-enable it to participate in dialog as a joint activity.
+is referring to, leading to backchannels.  \citet{dragan13} created a
+framework enabling a robot to produce gesture.  Similarly,
+\citet{tellex14} described an approach for enabling a robot to
+generate language by inverting a semantics framework.  Our long-term
+aim is that by combining these types of generation approaches with
+real-time understanding, the robot will produce back-channel feedback
+that closes the loop of dialog and enable it to participate in dialog
+as a joint activity.
 
 \section{TECHNICAL APPROACH}
 
@@ -277,15 +278,22 @@ p(z_t | x_t) &= p(l | x_t) \times p(r | x_t) \times p(h | x_t) \times p(s | x_t)
 \end{align}
 
 \noindent The following sections describe how we model each type of
-input from the person.
+input from the person.  We track body pose using the NITE
+tracker~\citep{openni} and define our models for hand and head
+gestures in terms of the person's body pose.
 
 \noindent{\bf Gesture.}  We model pointing gestures as a vector
-through three dimensional space. We calculate the angle between the
-gesture vector and the vector from the gesture origin to the mean of
-each cluster, and then use the PDF of a Gaussian ($\mathcal{N}$) with variance ($\sigma$) to determine the weight that should be
-assigned to that object. We define a function $\mbox{A}(o, p_1, p_2)$ as the
-angle between the two points, $p_1$ and $p_2$ with the given origin,
-$o$.  Then 
+through three dimensional space.  First, we calculate a gesture vector
+using the skeleton pose returned by NITE.  For arms, we compute a
+vector from the elbow to the wrist.  For head pose, we compute a
+vector based on the body orientation.  \stnote{Is the previous
+  sentence correct?} Next, we calculate the angle between the gesture
+vector and the vector from the gesture origin to the mean of each
+cluster, and then use the PDF of a Gaussian ($\mathcal{N}$) with
+variance ($\sigma$) to determine the weight that should be assigned to
+that object. We define a function $\mbox{A}(o, p_1, p_2)$ as the angle
+between the two points, $p_1$ and $p_2$ with the given origin, $o$.
+Then
 \begin{align}
 p(l | x_t) \propto \mathcal{N}(\mu_l=0, \sigma_l,A(l_o, l_v, x_t))\\
 p(r | x_t) \propto \mathcal{N}(\mu_r=0, \sigma_r,A(r_o, r_v, x_t))
@@ -432,7 +440,7 @@ the system is successfully able to fuse multi-modal information to
 achieve higher accuracy than each modality alone, but do not show
 performance in the real world.  To assess robustness to signal noise,
 we used two different levels of variance, demonstrating that even when
-the signal is highyl noisy, our approach is able to fuse information
+the signal is highly noisy, our approach is able to fuse information
 across modalities to improve performance.
 
 \begin{table}
@@ -467,7 +475,7 @@ combination of gesture and language they felt was appropriate. We
 indicted the object to refer to using a laser pointer, and we
 periodically shifted to a different object on a predetermined
 schedule.  They wore a microphone to pick up high-quality audio, and
-we tracked their body pose using the NITE tracker~\citep{openni}.  We
+.  We
 used the HTML5 Speech Recognition package in conjunction with Google
 Chrome to recognize speech.  This package reports incremental output
 as recognition proceeds, and we perform a model update each time a new
@@ -554,7 +562,7 @@ In the future we plan to expand our language model to incorporate
 models of compositional semantics and lower-level visual features so
 that the robot is not limited to prespecified object models.
 Additionally we aim to enable the robot to generate back-channel
-feedback based on its model using a POMDP framework, ultimatly aiming
+feedback based on its model using a POMDP framework, ultimately aiming
 to demonstrate that by providing appropriate backchannels, the robot
 elicits disambiguating responses from the person, increasing overall
 speed and accuracy of the interaction.  \citet{dragan13} created a
