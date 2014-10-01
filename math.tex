@@ -223,7 +223,7 @@ and a measurement update.  The time update updates the belief that the
 user is referring to a specific subset of objects given previous
 information:
 \begin{align}
-p(x_t | z_{0:t-1}) = \int p(x_t|x_{t-1})\times p(x_{t-1} | z_{0:t-1}) \text{d}x_{t-1}
+p(x_t | z_{0:t-1}) = \int_{x_{t-1} \in \mathcal{X}} p(x_t|x_{t-1})\times p(x_{t-1} | z_{0:t-1}) \text{d}x_{t-1}
 \end{align}
 
 The measurement update combines the previous belief with the newest observation to update each belief state: 
@@ -263,9 +263,9 @@ p(z_t | x_t)
 Observations consist of a tuple consisting of a person's actions,
 $\langle l, r, h, s\rangle $ where:
 \begin{itemize}
-	\item $l$ represents the observed origin ($l_o$) and vector ($l_v$) for the left arm.
-	\item $r$ represents the observed origin  ($r_o$) and vector ($r_v$)  for the right arm.
-	\item $h$ represents the observed origin  ($h_o$) and vector ($h_v$)  for head.
+	\item $l$ represents a vector from the observed origin ($l_o$) to the point ($l_v$) of the left arm.
+	\item $r$ represents a vector from the observed origin ($r_o$) to the point ($r_v$) of the right arm.
+	\item $h$ represents a vector from the observed origin ($h_o$) to the point ($h_v$) of the head.
 	\item $s$ represents the observed speech from the user,
           consisting of a list of words.
 	\end{itemize}
@@ -285,9 +285,8 @@ gestures in terms of the person's body pose.
 \noindent{\bf Gesture.}  We model pointing gestures as a vector
 through three dimensional space.  First, we calculate a gesture vector
 using the skeleton pose returned by NITE.  For arms, we compute a
-vector from the elbow to the wrist, then project this vector so that the origin is at the write.  For head pose, we compute a
-vector based on the body orientation.  \stnote{Is the previous
-  sentence correct?} Next, we calculate the angle between the gesture
+vector from the elbow to the wrist, then project this vector so that the origin is at the wrist.  For head pose, we compute a
+vector based on the body orientation. Next, we calculate the angle between the gesture
 vector and the vector from the gesture origin to the mean of each
 cluster, and then use the PDF of a Gaussian ($\mathcal{N}$) with
 variance ($\sigma$) to determine the weight that should be assigned to
@@ -295,8 +294,8 @@ that object. We define a function $\mbox{A}(o, p_1, p_2)$ as the angle
 between the two points, $p_1$ and $p_2$ with the given origin, $o$.
 Then
 \begin{align}
-p(l | x_t) \propto \mathcal{N}(\mu_l=0, \sigma_l,A(l_o, l_v, x_t))\\
-p(r | x_t) \propto \mathcal{N}(\mu_r=0, \sigma_r,A(r_o, r_v, x_t))
+p(l | x_t) \propto \mathcal{N}(\mu_l=0, \sigma_l)[A(l_o, l_v, x_t)]\\
+p(r | x_t) \propto \mathcal{N}(\mu_r=0, \sigma_r)[A(r_o, r_v, x_t)]
 \end{align}
 
 If the person's arm is more than a certain angle away from the table,
@@ -307,13 +306,13 @@ estimate of the objects being referenced.
 \noindent{\bf Head Pose.}
 Head pose is modeled in the same manner as arm gestures.
 \begin{align}
-p(h | x_t) \propto \mathcal{N}(\mu_h=0, \sigma_h,A(h_o, h_v, x_t))
+p(h | x_t) \propto \mathcal{N}(\mu_h=0, \sigma_h)[A(h_o, h_v, x_t)]
 \end{align}
 
 
-\noindent{\bf Speech.}  We model speech as a bag of words. We
+\noindent{\bf Speech.}  We model speech with a unigram model, namely we
 take the words in a given speech input and count how many words in
-this text match descriptors (denoted $x_d$) of specific objects.
+this text match descriptors of specific objects.
 \begin{align}
 p(s |x_t) = \displaystyle \prod_{w \in s} p(w | x_t)
 \end{align}
@@ -412,7 +411,7 @@ continuously, enabling it to fuse language and gesture as it occurs
 and quickly updating in response to new input from the person, verbal
 or nonverbal.  Our approach runs at 14Hz, including a 30Hz sleep
 cycle, on an Asus machine with 8 2.4 GHz Intel Cores that is also
-performing all perceptual and network processing. 
+performing all perceptual and network processing. This is used in conjunction with the Baxter Robot and a Kinect V1.
 
 \section{EVALUATION}
 
