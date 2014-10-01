@@ -57,15 +57,15 @@ must be able to understand people's references to objects in the
 external world.  For example, a robotic cooking assistant might fetch
 ingredients and tools, while a robotic factory assistant could deliver
 a part or a hospital robot could deliver water to a bedridden patient;
-Figure~\ref{fig:example} \menote{shows a robot handing a tool to an engineer in a laboratory setting?}shows a robot handing a tool to a worker in a
-factory.  To refer to objects, people use a combination of language,
-gesture, and body language such as eye gaze and pointing.  People
-provide these signals continuously, and a person's reference can
-quickly change based on new information about the domain.  Moreover, a
-human listener responds to these signals as they are given using {\em
-  backchannels}, for example nodding their head when they understand
-and looking confused or interrupting to ask a question when they do
-not.  \citet{clark96} refers to this continuous dance as {\em joint
+Figure~\ref{fig:example} shows a robot handing a tool to an engineer.
+To refer to objects, people use a combination of language, gesture,
+and body language such as eye gaze and pointing.  People provide these
+signals continuously, and a person's reference can quickly change
+based on new information about the domain.  Moreover, a human listener
+responds to these signals as they are given using {\em backchannels},
+for example nodding their head when they understand and looking
+confused or interrupting to ask a question when they do not.
+\citet{clark96} refers to this continuous dance as {\em joint
   activity} and compares language use to playing a duet because of its
 collaborative nature, where both parties act to establish common
 ground and reduce uncertainty.  Language and gesture co-occur and the
@@ -74,10 +74,10 @@ understanding.  Responding quickly to a person's input makes
 interaction more fluid and enables a robot to provide back-channel
 feedback based on its ability to understand: when it is confident, it
 can indicate that it is confident, and when it is unsure, it can
-indicate that as well.  This backchannel feedback could elicit appropriate
-responses from the person: they will move to the next task when the
-robot understands, or provide more information to disambiguate when
-the robot is confused.
+indicate that as well.  This backchannel feedback could elicit
+appropriate responses from the person: they will move to the next task
+when the robot understands, or provide more information to
+disambiguate when the robot is confused.
 
 
 Despite the importance of real-time response to multi-modal input,
@@ -207,10 +207,10 @@ enable it to participate in dialog as a joint activity.
 Our aim is to estimate a distribution over the object that a person is
 referring to given language and gesture inputs.  We frame the problem
 as a Bayes' filter~\citep{thrun08}, where the hidden state,
-$\mathcal{X}$, is the set of $m$ objects in the scene that the person
-is currently referencing. The robot observes the person's actions and
+$x \in \mathcal{X}$, is the the object in the scene that the person is
+currently referencing. The robot observes the person's actions and
 speech, $\mathcal{Z}$, and at each time step estimates a distribution
-over $\mathcal{X}$:
+over the curren state, $x_t$:
 \begin{align}
   p(x_t | z_0 \dots z_{0:t})
 \end{align}
@@ -229,7 +229,6 @@ The measurement update combines the previous belief with the newest observation 
 p(x_t |z_{0:t}) = \frac{p(z_t | x_t) \times p(x_t | z_{0:t-1})}{p(z_t | z_{0:t-1})} \\\propto p(z_t | x_t) \times p(x_t | z_{0:t-1})
 \end{align}
 
-Algorithm~\ref{alg:algorithm} shows pseudocode for our approach.
 
 
 \subsection{Prediction Model}
@@ -244,11 +243,12 @@ c &\mbox{otherwise}
 \end{array}\right.
 \end{align}
 
-\menote{Do you just want this line moved? (I moved it) --- In our experiments, $c$ has a value of 0.005}.  This assumption means
-that the robot's certainty slowly decays over time, in the absence of
-corroborating information.  Our framework integrates past language and
-gesture information but also quickly adapts to new, conflicting
-information because it assumes the person has changed objects.
+This assumption means that the robot's certainty slowly decays over
+time, in the absence of corroborating information, converging to a
+uniform distribution.  It enables our framework to integrate past
+language and gesture information but also quickly adapt to new,
+conflicting information because it assumes the person has changed
+objects.
 
 
 \subsection{Observation Model}
@@ -262,7 +262,7 @@ Observations consist of a tuple consisting of a person's actions,
 $\langle l, r, h, s\rangle $ where:
 \begin{itemize}
 	\item $l$ represents the observed origin ($l_o$) and vector ($l_v$) for the left arm.
-	\item $r$ represents the observed origin  ($r_o$) and vector ($r_v$)  for the right arm .
+	\item $r$ represents the observed origin  ($r_o$) and vector ($r_v$)  for the right arm.
 	\item $h$ represents the observed origin  ($h_o$) and vector ($h_v$)  for head.
 	\item $s$ represents the observed speech from the user,
           consisting of a list of words.
@@ -322,21 +322,40 @@ many gestures have little or no meaning. To allow for these without
 overloading the model with noise, we also calculate the angle between
 each arm vector and each foot. If the angle between the arms and a
 foot is smaller than the angle between the arms and any object, we
-assume that the user is in a resting pose, and treat that gesture as indicating uniform probability over all states.
+assume that the user is in a resting pose, and treat that gesture as
+indicating uniform probability over all states.
 
 \subsection{Model Parameters}
-We tuned model parameters by hand, using trial and error with several
-subjects to fine tune them.  We considered collecting and annotating a
-data set to train the model parameters, however with the subjectivity
-of gesture, we found our initial process both accurate and
-expedient. We generated the language model by hand, adding to it based
-on results of our first user studies.  We expect that as we add larger
-sets of objects, a language model trained using data from Amazon
-Mechanical Turk will be necessary to increase robustness over a larger
-set of objects.
-In our experiments, we had the following parameters:
-Transition probability was 0.0005. This was determined to give an  object that has 100\% confidence an approximately 10\% drop in confidence per second with all null observations.
-Standard deviation for the Gaussian used to model probability of gesture was 1.0 radians. We found that this standard deviation allowed for accurate pointing, without skewing the probabilities during an arm swing. For example, if you point at an object behind another object, you must swing your arm to point at the front most object along the way. This standard deviation prevented these probabilities from moving so quickly that rapid arm movements were considered accurate. Epsilon for the language model was set to 0.0001. We found that tuning this had little effect due to the size of our language model. The language model was relatively small, containing hand generated common descriptors for the objects used such as "bowl", "spoon", "metal", "shiny", etc. It also included words that were commonly misinterpreted, such as "bull" when the user was requesting a bowl. Using these descriptors and the specified epsilon, we trained a unigram language model.
+We tuned model parameters by hand.  We considered collecting and
+annotating a data set to train the model parameters, but we found our
+initial process to be quite accurate. We generated the language model
+by hand, adding to it based on results of our pilot
+studies. \stnote{We should say: ``After our initial tuning, we fixed
+  model parameters, and results reported in the paper all use the same
+  fixed set of parameters.''  Is that true?}  We expect that as we add
+larger sets of objects, a language model trained using data from
+Amazon Mechanical Turk or other corpora will be necessary to increase
+robustness over a larger set of objects.  
+
+In our experiments, we had the following parameters: the transition
+probability, $c$ was 0.0005. This was determined to give an object
+that has 100\% confidence an approximately 10\% drop in confidence per
+second with all null observations.  Standard deviation for the
+Gaussian used to model probability of gesture, $\sigma_l$,
+$\sigma_r$, and $\sigma_h$ was 1.0 radians. We found that this
+standard deviation allowed for accurate pointing, without skewing the
+probabilities during an arm swing.  The language model consisted of
+XXX\stnote{Fill in how many words. Replace ``relativly small'' with
+  the exact number.} words, containing common descriptors for the
+objects such as ``bowl,'' ``spoon,'' ``metal,'' ``shiny,'' etc. It
+also included words that were commonly misinterpreted by the speech
+recognition system, such as ``bull'' when the user was requesting a
+bowl.  
+
+%% We used unigram smootEpsilon for the language model was set to
+%% 0.0001. We found that tuning this had little effect due to the size of
+%% our language model. Using these descriptors and the specified epsilon,
+%% we trained a unigram language model.
 
 \begin{algorithm}
     \DontPrintSemicolon
@@ -370,6 +389,7 @@ Standard deviation for the Gaussian used to model probability of gesture was 1.0
 \label{alg:algorithm}
 \end{algorithm}
 
+Algorithm~\ref{alg:algorithm} shows pseudocode for our approach, while
 Figure~\ref{fig:cartoon} shows an example of the system's execution.
 The person's gesture is ambiguous, and the system initially infers an
 approximately bimodal distribution between the orange bowl and silver
