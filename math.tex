@@ -6,6 +6,7 @@
 \usepackage{natbib}
 \usepackage{graphicx}
 \usepackage[ruled]{algorithm2e}
+\usepackage{hyperref}
 \title{\LARGE \bf
 Interpreting Multimodal Referring Expressions in Real Time}
 \author{Miles Eldon, David Whitney, Stefanie Tellex\\Brown University}
@@ -351,10 +352,6 @@ also included words that were commonly misinterpreted by the speech
 recognition system, such as ``bull'' when the user was requesting a
 bowl.  
 
-%% We used unigram smootEpsilon for the language model was set to
-%% 0.0001. We found that tuning this had little effect due to the size of
-%% our language model. Using these descriptors and the specified epsilon,
-%% we trained a unigram language model.
 
 \begin{algorithm}
     \DontPrintSemicolon
@@ -416,8 +413,8 @@ We evaluated our model in simulation, comparing the full model to
 versions without multimodal information.  Additionally we assessed its
 performance on an RGB-D audio and video corpus of people referring to
 objects.  Finally we created an end-to-end robotic demonstration,
-demonstrated in the video attachment to our paper, and available
-online\footnote{video reference}.
+demonstrated in the \href{https://vimeo.com/107725829}{\textbf{video}} attachment to our paper, that is available
+online\footnote{\url{https://vimeo.com/107725829}}.
 
 \subsection{Simulation Results}
 
@@ -450,9 +447,6 @@ Arms only & 62.4\% & 42.1\%\\
 Multimodal (all)&  65.7\% & 54.1\%\\
 \bottomrule
 \end{tabular}
-\\
-\stnote{Need to add results for head, arms, and language in simulation}
-\menote{That's what the last one is, we're missing multimodal with just arms and language. I can add it though?}
 \end{table}
 
 \subsection{Real-World Corpus-Based Results}
@@ -499,6 +493,8 @@ gesture.  We believe this effect is because people's head pose quickly
 changes, so the signal itself is noisy, and the OpenNI head pose
 estimator is also inaccurate.
 
+The difference in accuracy between gesture alone and the multimodal output is not as large as one might expect. This is in part caused by the small delay in speech recognition software as opposed to the instantaneous gesture input. Additionally, many subjects, when told they could use gestures, leaned towards relying almost entirely on gesticulation. There were some users, however, who relied on an equal mix of both, and showed large leaps in accuracy between arms and multimodal. The most extreme example is of a user who, over their five trials, achieved only 45.5\% accuracy with arms alone and 42.2\% with speech alone, yet managed to achieve 85.7\% multimodal accuracy, only 2 percentage points away from the sum of the two probabilities, showing the ease at which alternating speech and gesture can give incredibly accurate results overall. While a combination of ambiguous speech and gesture such as "that spoon" followed by a gesture would be more accurate than just a gesture, we found that most test subjects either spoke with complete ambiguity or none, using phrases either of the form "hand me that thing" or "hand me the silver spoon". Therefore we were unable to fully test this hypothesis.
+
 \begin{table}
 \caption{Real-world Results\label{table:real_results}}
 \centering
@@ -513,20 +509,6 @@ Multimodal (All) &  64.84\% +/- 8\%\\
 \bottomrule
 \end{tabular}
 \end{table}
-%\begin{table}
-%\caption{Real-world Results\label{table:real_results}}
-%\centering
-%\begin{tabular}{lr}
-%\toprule
-%Random & 25\%\\
-%Language only &  32.7\% +/- 3.5\%\\
-%Gesture only  &  73.31\% +/- 4\%\\
-%Head only     &  23.4\% +/- 2\%\\
-%Multimodal (Language and Gesture) & {\bf 80.52\% +/- 2\%}\\
-%Multimodal (All) &  64.3\% +/- 3\%\\
-%\bottomrule
-%\end{tabular}
-%\end{table}
 \begin{table}
 \caption{Real-world Results (End of Interaction)\label{table:end_real}}
 \centering
@@ -556,8 +538,8 @@ unsure, it indicates its confusion by displaying a confused face,
 shown in Figure~\ref{fig:confused}.  The look of confusion triggers a
 disambiguating response from the person; this response causes the
 model to update and the robot responds by looking confident and moving
-its arm to point to the correct object.  The video shows this
-behavior. \stnote{Fill in a link to the video.}
+its arm to point to the correct object.  This \href{https://vimeo.com/107725829}{\textbf{video}} shows this
+behavior.
 
 \section{CONCLUSION}
 
