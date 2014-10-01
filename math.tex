@@ -279,13 +279,13 @@ p(z_t | x_t) &= p(l | x_t) \times p(r | x_t) \times p(h | x_t) \times p(s | x_t)
 
 \noindent The following sections describe how we model each type of
 input from the person.  We track body pose using the NITE
-tracker~\citep{openni} and define our models for hand and head
+tracker~\citep{openni} and define our models for the arm and head
 gestures in terms of the person's body pose.
 
 \noindent{\bf Gesture.}  We model pointing gestures as a vector
 through three dimensional space.  First, we calculate a gesture vector
 using the skeleton pose returned by NITE.  For arms, we compute a
-vector from the elbow to the wrist.  For head pose, we compute a
+vector from the elbow to the wrist, then project this vector so that the origin is at the write.  For head pose, we compute a
 vector based on the body orientation.  \stnote{Is the previous
   sentence correct?} Next, we calculate the angle between the gesture
 vector and the vector from the gesture origin to the mean of each
@@ -428,8 +428,8 @@ online\footnote{\url{https://vimeo.com/107725829}}.
 
 We evaluated our approach in simulation by generating data from the
 model and assessing its accuracy at estimating the object being
-referenced.  We generated simulated pointing data for each hand, the
-face, as well as spoken utterances at each timestep according to the
+referenced.  We generated simulated pointing data for each arm and the
+head, as well as spoken utterances at each timestep according to the
 model parameters.  We then used these parameters to update the
 system's estimate of the object being referred to.
 Table~\ref{table:sim_results} shows the results.  Our accuracy metric
