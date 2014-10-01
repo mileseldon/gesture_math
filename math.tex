@@ -330,9 +330,9 @@ We tuned model parameters by hand.  We considered collecting and
 annotating a data set to train the model parameters, but we found our
 initial process to be quite accurate. We generated the language model
 by hand, adding to it based on results of our pilot
-studies. \stnote{We should say: ``After our initial tuning, we fixed
+studies. After our initial tuning, we fixed
   model parameters, and results reported in the paper all use the same
-  fixed set of parameters.''  Is that true?}  We expect that as we add
+  fixed set of parameters. We expect that as we add
 larger sets of objects, a language model trained using data from
 Amazon Mechanical Turk or other corpora will be necessary to increase
 robustness over a larger set of objects.  
@@ -345,8 +345,7 @@ Gaussian used to model probability of gesture, $\sigma_l$,
 $\sigma_r$, and $\sigma_h$ was 1.0 radians. We found that this
 standard deviation allowed for accurate pointing, without skewing the
 probabilities during an arm swing.  The language model consisted of
-XXX\stnote{Fill in how many words. Replace ``relativly small'' with
-  the exact number.} words, containing common descriptors for the
+16 unique words, containing common descriptors for the
 objects such as ``bowl,'' ``spoon,'' ``metal,'' ``shiny,'' etc. It
 also included words that were commonly misinterpreted by the speech
 recognition system, such as ``bull'' when the user was requesting a
@@ -445,14 +444,15 @@ across modalities to improve performance.
 \begin{tabular}{lcr}
 \toprule
 & $\sigma^2 = 0.5$ & $\sigma^2 = 1.0$\\
-Language alone &  36.5\% & 37\%\\
-Head alone & 50.9\% & 35.8\%\\
-Arms alone & 62.4\% & 42.1\%\\
-Language and gesture &  65.7\% & 54.1\%\\
+Language only &  36.5\% & 37\%\\
+Head only & 50.9\% & 35.8\%\\
+Arms only & 62.4\% & 42.1\%\\
+Multimodal (all)&  65.7\% & 54.1\%\\
 \bottomrule
 \end{tabular}
 \\
 \stnote{Need to add results for head, arms, and language in simulation}
+\menote{That's what the last one is, we're missing multimodal with just arms and language. I can add it though?}
 \end{table}
 
 \subsection{Real-World Corpus-Based Results}
@@ -477,8 +477,8 @@ we tracked their body pose using the NITE tracker~\citep{openni}.  We
 used the HTML5 Speech Recognition package in conjunction with Google
 Chrome to recognize speech.  This package reports incremental output
 as recognition proceeds, and we perform a model update each time a new
-word is perceived.  We used XX subjects, and each subject participated
-in YY trials, for a total of 65 trials. \stnote{Fill in numbers.}
+word is perceived.  We used 13 subjects, and each subject participated
+in five trials, for a total of 65 trials.
 
 Results showing the percent of the time the estimated most likely
 object was the true object appear in Table~\ref{table:real_results}
