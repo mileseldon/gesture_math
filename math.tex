@@ -119,8 +119,8 @@ person's language and gesture input.
 
 \begin{figure*}
 \centering
-\subfigure[Ambiguous gesture.]{\includegraphics[width=0.49\linewidth]{figures/cartoon1.pdf}}
-\subfigure[Clarification with language.]{\includegraphics[width=0.49\linewidth]{figures/cartoon2.pdf}}
+\subfigure[Ambiguous gesture.\label{fig:confused}]{\includegraphics[width=0.49\linewidth]{figures/cartoon1.pdf}}
+\subfigure[Clarification with language.\label{fig:clarified}]{\includegraphics[width=0.49\linewidth]{figures/cartoon2.pdf}}
 \caption{After an ambiguous gesture, the model has a uniform
   distribution between two objects (a).  The robot responds by
   indicating confusion.  Clarification with language causes a
@@ -544,38 +544,52 @@ Multimodal (All) &  61.54\%\\
 
 \subsection{Robotic Demonstration}
 
-Because our approach enables a robot to quickly and constantly monitor
-a person's references to an object, a robot can respond to these
-estimates in real time.  We demonstrate this behavior by enabling
-Baxter to demonstrate its certainty about what object is being
-referenced, this eliciting more feedback from the person.  When the
-robot is very unsure, its arm moves back and forth between the
-candidate objects.  When it is sure, then it moves with more
-precision.  The video shows this behavior, as a person provides more
-information about what object is being referred to by the person.
+Because our approach enables a robot to quickly monitor a person's
+references to an object, the robot can respond to these estimates in
+real time, producing backchannel feedback that can trigger a person to
+produce disambiguating language and gesture when the person does not
+understand, and move on to the next task when the robot does
+understand.  We demonstrate this behavior by enabling Baxter to
+demonstrate its certainty about what object is being referenced, this
+eliciting more feedback from the person.  When the robot is very
+unsure, it indicates its confusion by displaying a confused face,
+shown in Figure~\ref{fig:confused}.  The look of confusion triggers a
+disambiguating response from the person; this response causes the
+model to update and the robot responds by looking confident and moving
+its arm to point to the correct object.  The video shows this
+behavior. \stnote{Fill in a link to the video.}
 
 \section{CONCLUSION}
 
 We have demonstrated a Bayes' filtering approach to interpreting a
 person's multimodal language and gesture references to objects
 continuously in real time.  Our approach enables a robot to understand
-a person's references to objects in the real world.
+a person's references to objects in the real world.  This paper
+represents steps toward continuous language understanding and the
+vision presented by \citet{clark96} of language as joint activity.
 
 In the future we plan to expand our language model to incorporate
 models of compositional semantics and lower-level visual features so
 that the robot is not limited to prespecified object models.
 Additionally we aim to enable the robot to generate back-channel
-feedback based on its model.  \citet{dragan13} created a framework for
-generating legible gesture, and we anticipate that enabling a robot to
-respond by pointing as in \citet{holladay14} when it is sure and
-reflecting its confusing when it is unsure.  Closing the loop will
-enable the human-robot dyad to increase efficiency and enable the
-robot to accurately infer the human's intent, naturally eliciting more
-information when it is confused and indicating that it has understood
-when it is sure.  This paper represents steps toward continuous
-language understanding and the vision presented by \citet{clark96} of
-language as joint activity.
-
+feedback based on its model using a POMDP framework, ultimatly aiming
+to demonstrate that by providing appropriate backchannels, the robot
+elicits disambiguating responses from the person, increasing overall
+speed and accuracy of the interaction.  \citet{dragan13} created a
+framework for generating legible gesture, and we anticipate that
+enabling a robot to respond by pointing as in \citet{holladay14} when
+it is sure and reflecting its confusion when it is unsure will enable
+the human-robot dyad to increase efficiency by naturally eliciting
+more information when the robot is confused and indicate that the
+person can move on when the robot has understood.  We also plan to
+extend our approach beyond a unigram language model so that it
+supports models of compositional semantics by embedding a parsing
+chart into the state~\citep{jurafsky95, earley70}.  These methods will
+enable the robot to understand nested referring expressions such as
+``the bowl on the table'' incrementally.  Finally, we aim to extend
+our approach beyond just object references; a similar modeling
+approach could be used to understand references to locations in the
+environment, and ultimately general command interpretation. 
 
 \bibliographystyle{abbrvnat}
 \bibliography{main}
