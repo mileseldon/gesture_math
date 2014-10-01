@@ -496,7 +496,7 @@ produced by a person.  We found that our head pose estimator was quite
 inaccurate, performing at worse than change unimodally.  Thus overall
 results that include head pose perform worse than language and
 gesture.  We believe this effect is because people's head pose quickly
-changes, so the signal itself is noisy, and the OpenNI head pose
+changes, so the signal itself is noisy, and the NITE head pose
 estimator is also inaccurate.
 
 The difference in accuracy between gesture alone and the multimodal output is not as large as one might expect. This is in part caused by the small delay in speech recognition software as opposed to the instantaneous gesture input. Additionally, many subjects, when told they could use gestures, leaned towards relying almost entirely on gesticulation. There were some users, however, who relied on an equal mix of both, and showed large leaps in accuracy between arms and multimodal. The most extreme example is of a user who, over their five trials, achieved only 45.5\% accuracy with arms alone and 42.2\% with speech alone, yet managed to achieve 85.7\% multimodal accuracy, only 2 percentage points away from the sum of the two probabilities, showing the ease at which alternating speech and gesture can give incredibly accurate results overall. While a combination of ambiguous speech and gesture such as "that spoon" followed by a gesture would be more accurate than just a gesture, we found that most test subjects either spoke with complete ambiguity or none, using phrases either of the form "hand me that thing" or "hand me the silver spoon". Therefore we were unable to fully test this hypothesis.
@@ -560,7 +560,7 @@ In the future we plan to expand our language model to incorporate
 models of compositional semantics and lower-level visual features so
 that the robot is not limited to prespecified object models.
 Additionally we aim to enable the robot to generate back-channel
-feedback based on its model using a POMDP framework, ultimately aiming
+feedback based on its model using a POMDP framework~\citep{kaelbling99}, ultimately aiming
 to demonstrate that by providing appropriate backchannels, the robot
 elicits disambiguating responses from the person, increasing overall
 speed and accuracy of the interaction.  \citet{dragan13} created a
