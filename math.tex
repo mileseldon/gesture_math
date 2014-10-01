@@ -247,12 +247,11 @@ c &\mbox{otherwise}
 \end{array}\right.
 \end{align}
 
-\stnote{move to model parameters and give the value}
-\menote{Do you just want this line moved? --- In our experiments, $c$ has a value of 0.005}.  This assumption means
-that the robot's certainty slowly decays over time, in the absence of
-corroborating information.  Our framework integrates past language and
-gesture information but also quickly adapts to new, conflicting
-information because it assumes the person has changed objects.
+This assumption means that the robot's certainty slowly decays over
+time, in the absence of corroborating information.  Our framework
+integrates past language and gesture information but also quickly
+adapts to new, conflicting information because it assumes the person
+has changed objects.
 
 
 \subsection{Observation Model}
@@ -331,16 +330,31 @@ assume that the user is in a resting pose, and treat that gesture as indicating 
 \subsection{Model Parameters}
 We tuned model parameters by hand, using trial and error with several
 subjects to fine tune them.  We considered collecting and annotating a
-data set to train the model parameters, however with the subjectivity
-of gesture, we found our initial process both accurate and
-expedient. We generated the language model by hand, adding to it based
-on results of our first user studies.  We expect that as we add larger
-sets of objects, a language model trained using data from Amazon
-Mechanical Turk will be necessary to increase robustness over a larger
-set of objects.
-In our experiments, we had the following parameters:
-Transition probability was 0.0005. This was determined to give an  object that has 100\% confidence a 5-10\% drop in confidence per second with no input.
-Standard deviation for the Gaussian used to model probability of gesture was 1.0 radians. We found that this standard deviation allowed for accurate pointing, without skewing the probabilities during an arm swing. For example, if you point at an object behind another object, you must swing your arm to point at the front most object along the way. A standard deviation prevented these probabilities from moving so quickly that rapid arm movements were considered accurate. Epsilon for the language model was set to 0.0001. We found that tuning this had little effect due to the size of our language model. The language model was relatively small, containing hand generated common descriptors for the objects used such as "bowl", "spoon", "metal", "shiny", etc. It also included words that were commonly misinterpreted, such as "bull" when the user was requesting a bowl. Using these descriptors and the specified epsilon, we trained a unigram language model.
+dataset to train the model parameters; however, we found our initial
+parameter settings to be highly accurate.  We generated the language
+model by hand, adding to it based on results of our first user
+studies.  We expect that as we add more objects, a language model
+trained using data from Amazon Mechanical Turk will be necessary to
+maintain robustness.  In our experiments, we had the following
+parameters: Transition probability, $c$, was 0.0005. This setting
+gives an object that has 100\% confidence a 5-10\% drop in confidence
+per second with no input.  The standard deviation for the Gaussian
+distributions on the point gestures, $\sigma_l$ and $\sigma_r$, was
+1.0 radians.  This value allows for accurate pointing, without skewing
+the probabilities during an arm swing.  We trained a unigram the
+language model using hand generated common descriptors for the objects
+used such as ``bowl,'' ``spoon,'' ``metal,'' ``shiny,'' etc. It also
+included words that were commonly misinterpreted, such as "bull" when
+the user was requesting a bowl. 
+
+%Using these descriptors and the specified epsilon, we trained a
+% unigram language model.
+
+
+%% The smoothing parameter,
+%% $\epsilon$, for the language model was 0.0001. Tuning this parameter
+%% had little effect due to the size of our language model.
+
 
 \begin{algorithm}
     \DontPrintSemicolon
@@ -461,16 +475,31 @@ used hard-coded object locations for our initial experiments.  We used
 the HTML5 Speech Recognition package in conjunction with Google Chrome
 to recognize speech.  This package reports incremental output as
 recognition proceeds, and we perform a model update each time a new
-word is recognized.
+word is recognized.  We collected data from NN subjects.  \stnote{Fill
+  in how many subjects} Each test subject performed several trials in
+succession to simulate real world interactivity such as shifting focus
+from one object to another, for a total of 65 trials.
 
 We report the percentage of time the most likely object predicted by
 the model was the true object in Table~\ref{table:real_results} with
 95\% confidence intervals. Additionally, we display accuracy at the
-end of an interaction in \ref{table:end_real}. These results and
-confidence intervals are the results of 65 trials, where each trial is
-one object being referenced for some time. Each test subject performed
-several trials in succession to simulate real world interactivity such
-as shifting focus from one object to another.
+end of an interaction in \ref{table:end_real} to assess the ability of
+the system to eventually infer the correct object.  Our results
+demonstrate the high accuracy of our framework at enabling a person to
+specify an object to the robot.  Multimodal accuracy using language
+and gesture had the highest performance, both in terms of percentage
+of time focusing on the correct object and also end-to-end
+interaction.  Of particular note is tghat despite the poor performance
+of language only, it provided complementary information to the gesture
+channel, and using the combined modalities, the system inferred the
+correct object more than 90\% of the time by the end of the
+interaction.
+
+Our results using head pose are quite poor, both unimodally and also
+when combined with other channels.  We believe these results are due
+to the poor accuracy of the OpenNI head tracker which produced quite
+noisy data.
+
 \begin{table}
 \caption{Real-world Results\label{table:real_results}}
 \centering
@@ -531,22 +560,34 @@ information about what object is being referred to by the person.
 We have demonstrated a Bayes' filtering approach to interpreting a
 person's multimodal language and gesture references to objects
 continuously in real time.  Our approach enables a robot to understand
-a person's references to objects in the real world.
+a person's references to objects in the real world.  This paper
+represents steps toward continuous language understanding and the
+vision presented by \citet{clark96} of language as joint activity.
 
-In the future we plan to expand our language model to incorporate
-models of compositional semantics and lower-level visual features so
-that the robot is not limited to prespecified object models.
-Additionally we aim to enable the robot to generate back-channel
-feedback based on its model.  \citet{dragan13} created a framework for
-generating legible gesture, and we anticipate that enabling a robot to
-respond by pointing as in \citet{holladay14} when it is sure and
-reflecting its confusing when it is unsure.  Closing the loop will
-enable the human-robot dyad to increase efficiency and enable the
-robot to accurately infer the human's intent, naturally eliciting more
+A key next step is to scale the complexity of our domain, so that the
+robot can understand multimodal references to a wider class of
+objects.  Additionaly we aim to generalize our approach beyond
+referring expressions so the robot can also understand references to
+specific locations in the environment and actions it can take to
+further the person's goals.  We aim to expand our language model to
+incorporate models of compositional semantics and lower-level visual
+features so that the robot is not limited to prespecified object
+models.  A key aim is to develop a principled POMDP framework to
+enable the robot to responsively generate back-channel feedback based
+on its model.  \citet{dragan13} created a framework for generating
+legible gesture, and we anticipate that enabling a robot to respond by
+pointing as in \citet{holladay14} when it is sure and reflecting its
+confusing when it is unsure.  Closing the loop will enable the
+human-robot dyad to increase efficiency and enable the robot to
+accurately infer the human's intent, naturally eliciting more
 information when it is confused and indicating that it has understood
-when it is sure.  This paper represents steps toward continuous
-language understanding and the vision presented by \citet{clark96} of
-language as joint activity.
+when it is sure.  We are also eager to explore more complex language
+models over larger classes of objects.  In particular, we believe our
+framework can be combined with a chart parser~\citep{earley70,
+  jurafsky95} and probabilistic grounding models~\citep{tellex11},
+enabling the robot to incorporate models of grounded semantics into
+its incremental language understanding, further increasing accuracy
+and robustness in complex environments.
 
 
 \bibliographystyle{abbrvnat}
