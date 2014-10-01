@@ -248,7 +248,7 @@ c &\mbox{otherwise}
 \end{align}
 
 \stnote{move to model parameters and give the value}
-In our experiments, $c$ has a value of XXX.  This assumption means
+\menote{Do you just want this line moved? --- In our experiments, $c$ has a value of 0.005}.  This assumption means
 that the robot's certainty slowly decays over time, in the absence of
 corroborating information.  Our framework integrates past language and
 gesture information but also quickly adapts to new, conflicting
@@ -326,15 +326,7 @@ many gestures have little or no meaning. To allow for these without
 overloading the model with noise, we also calculate the angle between
 each arm vector and each foot. If the angle between the arms and a
 foot is smaller than the angle between the arms and any object, we
-assume that the user is in a resting pose, and do not incorporate that
-information from that arm into that update iteration. This effect
-means the model stops updating when the person's arms are at their
-side.
-
-\stnote{So are continuous gestures handled the same as continuous
-  words?  How come we don't treat the null gesture as uniform over the
-  four objects, but instead skip doing the update?  I think we should
-  treat null gesture the same as null words.}
+assume that the user is in a resting pose, and treat that gesture as indicating uniform probability over all states.
 
 \subsection{Model Parameters}
 We tuned model parameters by hand, using trial and error with several
@@ -346,28 +338,9 @@ on results of our first user studies.  We expect that as we add larger
 sets of objects, a language model trained using data from Amazon
 Mechanical Turk will be necessary to increase robustness over a larger
 set of objects.
-
-\stnote{Can you list model parameters and their exact values?  We
-  should say what each model parameter was and where it came from. The
-  covariance of the Gaussians, and the language model?  We don't have
-  to list all the words in the language model, but we should say we
-  trained a unigram model by writing descriptions of each object along
-  with misidentifications from the speech recognition system.}
-
-
-%We train model parameters by fitting each factor to an annotated
-%training corpus.  We collected a dataset of people referring to an
-%object, including language and gesture.  We instrumented human
-%annotators with a microphone and initialized the gesture tracker.
-%Then we instructed them to refer to an object which we indicated with
-%a laser pointer; using a laser pointed meant that we avoided using
-%language and gesture ourselves to refer to the object.  We periodically
-%changed the object to refer to, to simulate a dialog where the person
-%periodically refers to different objects.  For example, the robot
-%could be acting as a cooking assistant and retrieving different
-%ingredients, or in a hospital fetching water, a phone, or a book for a
-%patient recovering from surgery, who is unable to get out of bed.  We
-%used this real-world dataset to train and evaluate our model.
+In our experiments, we had the following parameters:
+Transition probability was 0.0005. This was determined to give an  object that has 100\% confidence a 5-10\% drop in confidence per second with no input.
+Standard deviation for the Gaussian used to model probability of gesture was 1.0 radians. We found that this standard deviation allowed for accurate pointing, without skewing the probabilities during an arm swing. For example, if you point at an object behind another object, you must swing your arm to point at the front most object along the way. A standard deviation prevented these probabilities from moving so quickly that rapid arm movements were considered accurate. Epsilon for the language model was set to 0.0001. We found that tuning this had little effect due to the size of our language model. The language model was relatively small, containing hand generated common descriptors for the objects used such as "bowl", "spoon", "metal", "shiny", etc. It also included words that were commonly misinterpreted, such as "bull" when the user was requesting a bowl. Using these descriptors and the specified epsilon, we trained a unigram language model.
 
 \begin{algorithm}
     \DontPrintSemicolon
