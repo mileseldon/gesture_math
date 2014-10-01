@@ -347,18 +347,17 @@ Amazon Mechanical Turk or other corpora will be necessary to increase
 robustness over a larger set of objects.  
 
 In our experiments, we had the following parameters: the transition
-probability, $c$ was 0.0005. This was determined to give an object
+probability, $c$ was 0.0005. We set this parameter to give an object
 that has 100\% confidence an approximately 10\% drop in confidence per
 second with all null observations.  Standard deviation for the
-Gaussian used to model probability of gesture, $\sigma_l$,
-$\sigma_r$, and $\sigma_h$ was 1.0 radians. We found that this
-standard deviation allowed for accurate pointing, without skewing the
-probabilities during an arm swing.  The language model consisted of
-16 unique words, containing common descriptors for the
-objects such as ``bowl,'' ``spoon,'' ``metal,'' ``shiny,'' etc. It
-also included words that were commonly misinterpreted by the speech
-recognition system, such as ``bull'' when the user was requesting a
-bowl.  
+Gaussian used to model probability of gesture, $\sigma_l$, $\sigma_r$,
+and $\sigma_h$ was 1.0 radians. We found that this standard deviation
+allowed for accurate pointing, without skewing the probabilities
+during an arm swing.  The language model consisted of 16 unique words,
+containing common descriptors for the objects such as ``bowl,''
+``spoon,'' ``metal,'' ``shiny,'' etc. It also included words that were
+commonly misinterpreted by the speech recognition system, such as
+``bull'' when the user was requesting a bowl.
 
 
 \begin{algorithm}
