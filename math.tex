@@ -413,70 +413,92 @@ performing all perceptual and network processing.
 
 \section{EVALUATION}
 
-We evaluate our model in simulation, comparing the full model to
+We evaluated our model in simulation, comparing the full model to
 versions without multimodal information.  Additionally we assessed its
 performance on an RGB-D audio and video corpus of people referring to
 objects.  Finally we created an end-to-end robotic demonstration,
 demonstrated in the video attachment to our paper, and available
-online\footnote{video reference}. 
+online\footnote{video reference}.
 
 \subsection{Simulation Results}
 
 We evaluated our approach in simulation by generating data from the
 model and assessing its accuracy at estimating the object being
-referenced.  We generate simulated pointing data for each hand, the
+referenced.  We generated simulated pointing data for each hand, the
 face, as well as spoken utterances at each timestep according to the
-model parameters.  We then use these parameters to update the system's
-estimate of the object being referred to.
+model parameters.  We then used these parameters to update the
+system's estimate of the object being referred to.
 Table~\ref{table:sim_results} shows the results.  Our accuracy metric
 is the fraction of time that the robot is pointing at the correct
 object.  We report performance using language alone, gesture alone,
 and language combined with gesture.  These results demonstrate that
 the system is successfully able to fuse multi-modal information to
 achieve higher accuracy than each modality alone, but do not show
-performance in the real world.  While a gesture and language output
-probabilistically referencing the true object are produced at each
-time step in simulation, the multimodal accuracy is robust to severe
-increases in single-modal noise, as you can see in the table when we increase the sample variance. 
+performance in the real world.  To assess robustness to signal noise,
+we used two different levels of variance, demonstrating that even when
+the signal is highyl noisy, our approach is able to fuse information
+across modalities to improve performance.
 
 \begin{table}
 \centering
 \caption{Simulation Results\label{table:sim_results}}
 \begin{tabular}{lcr}
+\toprule
 & $\sigma^2 = 0.5$ & $\sigma^2 = 1.0$\\
 Language alone &  36.5\% & 37\%\\
 Head alone & 50.9\% & 35.8\%\\
 Arms alone & 62.4\% & 42.1\%\\
-Language and gesture &  65.7\% & 54.1\%
+Language and gesture &  65.7\% & 54.1\%\\
+\bottomrule
 \end{tabular}
-
+\\
+\stnote{Need to add results for head, arms, and language in simulation}
 \end{table}
 
 \subsection{Real-World Corpus-Based Results}
 
 \begin{figure}
-\parbox{1\linewidth}{~\\~\\~\\~\\}
-\caption{Scene from our dataset.\label{fig:corpus_scene}}
+\centering
+\includegraphics[width=0.5\linewidth]{figures/dataset.png}
+\caption{Scene from our data collection environment.\label{fig:corpus_scene}}
 \end{figure}
 
 Our real-world experiments measured our algorithm's performance when a
-person referred to an object visually and with gesture.  The subject stood in front of a table with four objects placed approximately one foot apart, forming four corners of a square,
-as shown in Figure~\ref{fig:corpus_scene}.  We instructed subjects to ask for the indicated object in the most natural way possible, using whatever combination of gesture and language they felt was appropriate. We indicted the object to refer to using a
-laser pointer, and we periodically shifted to a different object on a
-predetermined schedule.  They wore a microphone to pick up
-high-quality audio, and we tracked their body pose using the NITE
-tracker~\citep{openni}.  We used a single Kinect that was able to capture both the user and the table.
+person referred to an object visually and with gesture.  The subject
+stood in front of a table with four objects placed approximately one
+foot apart, forming four corners of a square, as shown in
+Figure~\ref{fig:corpus_scene}.  We instructed subjects to ask for the
+indicated object in the most natural way possible, using whatever
+combination of gesture and language they felt was appropriate. We
+indicted the object to refer to using a laser pointer, and we
+periodically shifted to a different object on a predetermined
+schedule.  They wore a microphone to pick up high-quality audio, and
+we tracked their body pose using the NITE tracker~\citep{openni}.  We
+used the HTML5 Speech Recognition package in conjunction with Google
+Chrome to recognize speech.  This package reports incremental output
+as recognition proceeds, and we perform a model update each time a new
+word is perceived.  We used XX subjects, and each subject participated
+in YY trials, for a total of 65 trials. \stnote{Fill in numbers.}
 
-We used the HTML5 Speech Recognition package in conjunction with Google Chrome to recognize speech.
-This package reports incremental output in \ref{¥}al time as recognition
-proceeds, and we perform a model update each time a new word is
-perceived.  Our training procedure works on actual speech recognition
-results rather than transcript speech, enabling the algorithm to adapt
-to the errors produced by the recognizer: if it returns ``cake''
-instead of ``cup,'' our language model will correctly associate the
-word ``cake'' with the ``cup'' object.
+Results showing the percent of the time the estimated most likely
+object was the true object appear in Table~\ref{table:real_results}
+with 95\% confidence intervals.  During a typical trial, the model
+starts out approximately uniform or unimodal on the previous object
+(we did not reset the model between trials.) As the subject points and
+talks, the model quickly converges to the correct object.  Our first
+set of results give a sense of how quickly the model converges.
 
-Results showing the percent of the time the estimated most likely object was the true object appear in Table~\ref{table:real_results} with 95\% confidence intervals. Additionally, we display accuracy at the end of an interaction in \ref{table:end_real}. These results and confidence intervals are the results of 65 trials, where each trial is one object being referenced for some period of time. Each test subject performed several trials in succession to simulate real world interactivity such as shifting focus from one object to another.
+To assess overall accuracy, we report the system's accuracy at the end
+of a trial in \ref{table:end_real}.  Multimodal accuracy with language
+and gesture is more than 90\%, demonstrating that our approach is able
+to quickly and accurately interpret unscripted language and gesture
+produced by a person.  We found that our head pose estimator was quite
+inaccurate, performing at worse than change unimodally.  Thus overall
+results that include head pose perform worse than language and
+gesture.  We believe this effect is because people's head pose quickly
+changes, so the signal itself is noisy, and the OpenNI head pose
+estimator is also inaccurate.
+
 \begin{table}
 \caption{Real-world Results\label{table:real_results}}
 \centering
