@@ -438,7 +438,8 @@ model and assessing its accuracy at estimating the object being
 referenced.  We generate simulated pointing data for each hand, the
 face, as well as spoken utterances at each timestep according to the
 model parameters.  We then use these parameters to update the system's
-estimate of the object being referred to.
+estimate of the object being referred to.  We report results for two
+different varience levels to simulate increasing noise in the data.
 Table~\ref{table:sim_results} shows the results.  Our accuracy metric
 is the fraction of time that the robot is pointing at the correct
 object.  We report performance using language alone, gesture alone,
@@ -448,7 +449,8 @@ achieve higher accuracy than each modality alone, but do not show
 performance in the real world.  While a gesture and language output
 probabilistically referencing the true object are produced at each
 time step in simulation, the multimodal accuracy is robust to severe
-increases in single-modal noise, as you can see in the table when we increase the sample variance. 
+increases in single-modal noise, as you can see in the table when we
+increase the sample variance.
 
 \begin{table}
 \centering
@@ -460,34 +462,42 @@ Head alone & 50.9\% & 35.8\%\\
 Arms alone & 62.4\% & 42.1\%\\
 Language and gesture &  65.7\% & 54.1\%
 \end{tabular}
-
+\stnote{What about language gesture and head in simulation?}
 \end{table}
 
 \subsection{Real-World Corpus-Based Results}
 
 \begin{figure}
-\parbox{1\linewidth}{~\\~\\~\\~\\}
-\caption{Scene from our dataset.\label{fig:corpus_scene}}
+\centering
+\includegraphics[width=0.5\linewidth]{figures/dataset.png}
+\caption{Scene from our data collection environment.\label{fig:corpus_scene}}
 \end{figure}
 
 Our real-world experiments measured our algorithm's performance when a
-person referred to an object visually and with gesture.  The subject stood in front of a table with four objects placed approximately one foot apart, forming four corners of a square,
-as shown in Figure~\ref{fig:corpus_scene}.  We instructed subjects to ask for the indicated object in the most naturally way possible, using whatever combination of gesture and language they felt was appropriate. We indicted the object to refer to using a
-laser pointer, and we periodically shifted to a different object on a
-predetermined schedule.  They wore a microphone to pick up
-high-quality audio, and we tracked their body pose using the NITE
-tracker~\citep{openni}.  We used a single Kinect that was able to capture both the user and the table.
+person referred to an object visually and with gesture.  The subject
+stood in front of a table with four objects placed approximately one
+foot apart, forming four corners of a square, as shown in
+Figure~\ref{fig:corpus_scene}.  We instructed subjects to ask for the
+indicated object in the most natural way possible, using whatever
+combination of gesture and language they felt was appropriate. We
+indicted the object to refer to using a laser pointer, and we
+periodically shifted to a different object on a predetermined
+schedule.  They wore a microphone to pick up high-quality audio, and
+we tracked their body pose using the NITE tracker~\citep{openni}.  We
+used hard-coded object locations for our initial experiments.  We used
+the HTML5 Speech Recognition package in conjunction with Google Chrome
+to recognize speech.  This package reports incremental output as
+recognition proceeds, and we perform a model update each time a new
+word is recognized.
 
-We used the HTML5 Speech Recognition package in conjunction with Google Chrome to recognize speech.
-This package reports incremental output in \ref{¥}al time as recognition
-proceeds, and we perform a model update each time a new word is
-perceived.  Our training procedure works on actual speech recognition
-results rather than transcript speech, enabling the algorithm to adapt
-to the errors produced by the recognizer: if it returns ``cake''
-instead of ``cup,'' our language model will correctly associate the
-word ``cake'' with the ``cup'' object.
-
-Results showing the percent of the time the estimated most likely object was the true object appear in Table~\ref{table:real_results} with 95\% confidence intervals. Additionally, we display accuracy at the end of an interaction in \ref{table:end_real}. These results and confidence intervals are the results of 65 trials, where each trial is one object being referenced for some time. Each test subject performed several trials in succession to simulate real world interactivity such as shifting focus from one object to another.
+We report the percentage of time the most likely object predicted by
+the model was the true object in Table~\ref{table:real_results} with
+95\% confidence intervals. Additionally, we display accuracy at the
+end of an interaction in \ref{table:end_real}. These results and
+confidence intervals are the results of 65 trials, where each trial is
+one object being referenced for some time. Each test subject performed
+several trials in succession to simulate real world interactivity such
+as shifting focus from one object to another.
 \begin{table}
 \caption{Real-world Results\label{table:real_results}}
 \centering
