@@ -7,6 +7,7 @@
 \usepackage{graphicx}
 \usepackage[ruled]{algorithm2e}
 \usepackage{hyperref}
+\pdfminorversion=4
 \title{\LARGE \bf
 Interpreting Multimodal Referring Expressions in Real Time}
 \author{Miles Eldon, David Whitney, Stefanie Tellex\\Brown University}
@@ -31,7 +32,7 @@ shared tasks.  Existing work has addressed this problem in single
 modalities, such as natural language or gesture, or fused modalities
 in non-realtime systems, but a gap remains in creating systems that
 simultaneously fuse information from language and gesture
-incrementally, in real time. Processing communicative input incrementally
+incrementally, over time. Processing communicative input incrementally
 has the potential to speed up the robot's reaction time, as well as
 incorporate the timing of words and gesture into the understanding
 process, increasing the robot's speed and accuracy at interpreting the
@@ -220,7 +221,7 @@ over the current state, $x_t$:
 
 To estimate this distribution, we alternate performing a time update
 and a measurement update.  The time update updates the belief that the
-user is referring to a specific subset of objects given previous
+user is referring to a specific object given previous
 information:
 \begin{align}
 p(x_t | z_{0:t-1}) = \int_{x_{t-1} \in \mathcal{X}} p(x_t|x_{t-1})\times p(x_{t-1} | z_{0:t-1}) \text{d}x_{t-1}
@@ -287,8 +288,7 @@ through three dimensional space.  First, we calculate a gesture vector
 using the skeleton pose returned by NITE.  For arms, we compute a
 vector from the elbow to the wrist, then project this vector so that the origin is at the wrist.  For head pose, we compute a
 vector based on the body orientation. Next, we calculate the angle between the gesture
-vector and the vector from the gesture origin to the mean of each
-cluster, and then use the PDF of a Gaussian ($\mathcal{N}$) with
+vector and the vector from the gesture origin to the center of each object, and then use the PDF of a Gaussian ($\mathcal{N}$) with
 variance ($\sigma$) to determine the weight that should be assigned to
 that object. We define a function $\mbox{A}(o, p_1, p_2)$ as the angle
 between the two points, $p_1$ and $p_2$ with the given origin, $o$.
@@ -311,8 +311,7 @@ p(h | x_t) \propto \mathcal{N}(\mu_h=0, \sigma_h)[A(h_o, h_v, x_t)]
 
 
 \noindent{\bf Speech.}  We model speech with a unigram model, namely we
-take the words in a given speech input and count how many words in
-this text match descriptors of specific objects.
+take each word in a given speech input and calcuate the probability that, given the state, that word would have been spoken.
 \begin{align}
 p(s |x_t) = \displaystyle \prod_{w \in s} p(w | x_t)
 \end{align}
@@ -346,7 +345,7 @@ Amazon Mechanical Turk or other corpora will be necessary to increase
 robustness over a larger set of objects.  
 
 In our experiments, we had the following parameters: the transition
-probability, $c$ was 0.0005. We set this parameter to give an object
+probability, $c$, was 0.0005. We set this parameter to give an object
 that has 100\% confidence an approximately 10\% drop in confidence per
 second with all null observations.  Standard deviation for the
 Gaussian used to model probability of gesture, $\sigma_l$, $\sigma_r$,
@@ -366,7 +365,7 @@ commonly misinterpreted by the speech recognition system, such as
     \KwOut{$bel(x_t)$}
     \BlankLine
     \For{ $x_t$} {
-      $\bar{bel}(x_t) = \displaystyle\prod_{x_{t-1}} p(x_t|x_{t-1})*bel(x_{t-1})$
+      $\bar{bel}(x_t) = \displaystyle\sum_{x_{t-1}} p(x_t|x_{t-1})*bel(x_{t-1})$
       \BlankLine
       \textbf{if not} is\_null\_gesture(l)
       \BlankLine
@@ -493,11 +492,9 @@ of a trial in \ref{table:end_real}.  Multimodal accuracy with language
 and gesture is more than 90\%, demonstrating that our approach is able
 to quickly and accurately interpret unscripted language and gesture
 produced by a person.  We found that our head pose estimator was quite
-inaccurate, performing at worse than change unimodally.  Thus overall
+inaccurate, performing slightly below random.  Thus overall
 results that include head pose perform worse than language and
-gesture.  We believe this effect is because people's head pose quickly
-changes, so the signal itself is noisy, and the NITE head pose
-estimator is also inaccurate.
+gesture.  We believe this effect has several sources, including marginal head movement when objects are relatively close together, as well as general inaccuracy in head rotation tracking. 
 
 The difference in accuracy between gesture alone and the multimodal output is not as large as one might expect. This is in part caused by the small delay in speech recognition software as opposed to the instantaneous gesture input. Additionally, many subjects, when told they could use gestures, leaned towards relying almost entirely on gesticulation. There were some users, however, who relied on an equal mix of both, and showed large leaps in accuracy between arms and multimodal. The most extreme example is of a user who, over their five trials, achieved only 45.5\% accuracy with arms alone and 42.2\% with speech alone, yet managed to achieve 85.7\% multimodal accuracy, only 2 percentage points away from the sum of the two probabilities, showing the ease at which alternating speech and gesture can give incredibly accurate results overall. While a combination of ambiguous speech and gesture such as "that spoon" followed by a gesture would be more accurate than just a gesture, we found that most test subjects either spoke with complete ambiguity or none, using phrases either of the form "hand me that thing" or "hand me the silver spoon". Therefore we were unable to fully test this hypothesis.
 
@@ -546,7 +543,7 @@ disambiguating response from the person; this response causes the
 model to update and the robot responds by looking confident and moving
 its arm to point to the correct object.  A video demonstrating this
 behavior is located in the video attachment to our paper, and also at
-\href{https://vimeo.com/107725829}{\textbf{https://vimeo.com/107725829}}.
+\url{https://vimeo.com/107725829}.
 
 \section{CONCLUSION}
 
